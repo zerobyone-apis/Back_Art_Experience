@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog-ext">
+
+    <changeSet id="create_table_barbers" author="max3.1994@gmail.com">
+        <createTable tableName="barbers">
+            <!-- User Information -->
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="TIMESTAMP WITH TIME ZONE"/>
+
+            <!-- Barber Information -->
+            <column name="name" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="local_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="local_name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cel" type="VARCHAR(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="times_worked" type="BIGINT">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="times_of_barber" type="VARCHAR(1000)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+
+            <!-- Analytics Information -->
+            <column name="amount_of_cuts" type="BIGINT"/>
+            <column name="amount_of_clients" type="BIGINT"/>
+            <column name="amount_of_comments" type="BIGINT"/>
+            <column name="amount_of_likes_on_comments" type="BIGINT"/>
+            <column name="amount_of_shareds" type="BIGINT"/>
+            <column name="prestige" type="BIGINT"/>
+            <column name="amount_of_daily_reserves" type="BIGINT"/>
+            <column name="rate_of_barber" type="BIGINT"/>
+            <column name="is_active" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

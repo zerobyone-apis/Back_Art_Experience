@@ -21,6 +21,7 @@ public class Barber implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "barber_sequence")
 	@SequenceGenerator(name = "barber_sequence", initialValue = 1)
+
 	//User information
 	@Column(name = "id")
 	private Long id;
@@ -63,10 +64,10 @@ public class Barber implements Serializable {
 	@Column(name = "amount_of_shareds")
 	private Long amountOfShares;
 	@Column(name = "prestige")
-	private Long prestige;
+	private Double prestige;
 	@Column(name = "amount_daily_reserves")
 	private Long amountDailyReserves;
-	@Column(name = "status") // Borrado logico.
+	@Column(name = "is_active") // Borrado logico.
 	private Boolean isActive;
 
 	public Long getId() {
@@ -213,11 +214,11 @@ public class Barber implements Serializable {
 		this.amountOfShares = amountOfShares;
 	}
 
-	public Long getPrestige() {
+	public Double getPrestige() {
 		return prestige;
 	}
 
-	public void setPrestige(Long prestige) {
+	public void setPrestige(Double prestige) {
 		this.prestige = prestige;
 	}
 
