@@ -1,0 +1,33 @@
+#TODO: Change this Docker-Compose is very simple, and just we need specify what we use and we need.
+version: '3'
+
+services:
+  catalogo:
+    container_name: catalogo_ap1
+    build: ./
+    ports:
+      - 8082:8082
+    networks:
+      - mynet
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: postgresql_ap1
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    networks:
+      - mynet
+    volumes:
+      - /data/db:/var/lib/postgresql/data
+
+    environment:
+      - PGDATA=/var/lib/postgresql/data/db-files/
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=artexperiencedb
+
+networks:
+  mynet:
+
