@@ -1,0 +1,61 @@
+{
+  "barberOrHairdresserId":1,
+  "clientId":1,
+  "nameClient":"Machupichu Client 2",
+  "mailClient":"machupichu.client@gmail.com",
+  "celClient": 92334455,
+  "startTime":"2020-07-06T13:30:19.669692800Z",
+  "endTime":"2020-07-06T14:00:19.669692800Z",
+  "workToDo":"CORTE+BARBA+CEJAS",
+  "priceWork": 350.0,
+  "additionalCost": 40.0,
+  "workTime":30
+},
+{
+"barberOrHairdresserId":1,
+"clientId":1,
+"nameClient":"Machupichu Client 2",
+"mailClient":"machupichu.client@gmail.com",
+"celClient": 92334455,
+"startTime":"2020-07-06T13:30:19.669692800Z",
+"endTime":"2020-07-06T14:00:19.669692800Z",
+"workToDo":"CORTE+BARBA+CEJAS",
+"priceWork": 350.0,
+"additionalCost": 40.0,
+"workTime":30
+},
+{
+"barberOrHairdresserId":1,
+"clientId":1,
+"nameClient":"Machupichu Client 2",
+"mailClient":"machupichu.client@gmail.com",
+"celClient": 92334455,
+"startTime":"2020-07-06T13:30:19.669692800Z",
+"endTime":"2020-07-06T14:00:19.669692800Z",
+"workToDo":"CORTE+BARBA+CEJAS",
+"priceWork": 350.0,
+"additionalCost": 40.0,
+"workTime":30
+}
+
+/* Respuesta del ENDPOINT */
+
+{
+"reserveId": 1,
+"barberOrHairdresserId": 1,
+"clientId": 1,
+"nameClient": "Machupichu Client 2",
+"mailClient": "machupichu.client@gmail.com",
+"celClient": 92334455,
+"startTime": "2020-07-06T13:30:19.669692800Z",
+"endTime": "2020-07-06T14:00:19.669692800Z",
+"work_id": 1,
+"workToDo": "CORTE+BARBA+CEJAS",
+"priceWork": 350.0,
+"workTime": 30,
+"additionalCost": 40.0,
+"totalCost": 390.0,
+"createOn": "2020-07-03T05:06:40.505130800Z",
+"createBy": "Mariano Moreno",
+"active": true
+}
