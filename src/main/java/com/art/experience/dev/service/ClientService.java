@@ -173,6 +173,14 @@ public class ClientService {
     private User createUser(final Client client) {
         User user = new User();
         try {
+            Optional<User> checkUser = userRepository.findByUsername(client.getUsername());
+            if(!checkUser.isEmpty()){
+                LOGGER.error(client.getUsername() + " already exists, please try with another Username.");
+                throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
+            }
+
+            /****** User Information ********/
+
             user.setUsername(client.getUsername());
             user.setPassword(client.getPassword());
             user.setCreateOn(Instant.now());

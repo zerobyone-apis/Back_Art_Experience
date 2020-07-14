@@ -35,7 +35,13 @@ public class UserServices {
 
     public User createClientUser(final User bodyUser) {
         User user = new User();
-        try{
+        try {
+            Optional<User> checkUser = repository.findByUsername(bodyUser.getUsername());
+            if(!checkUser.isEmpty()){
+                LOGGER.error(bodyUser.getUsername() + " already exists, please try with another Username.");
+                throw new CreateResourceException(bodyUser.getUsername() + " already exists, please try with another Username.");
+            }
+
             user.setUsername(bodyUser.getUsername());
             user.setPassword(bodyUser.getPassword());
             user.setCreateOn(Instant.now());
