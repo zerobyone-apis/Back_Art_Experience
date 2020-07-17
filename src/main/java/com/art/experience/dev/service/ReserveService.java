@@ -177,7 +177,7 @@ public class ReserveService {
 
         /*TODO: CREAR ENUMERADO QUE WORKS CON 1-NAME_WORK 2-TIME_WORK 3-PRICE_WORK*/
         // Work or Service info
-        Work work = createWorkByReserve(clientId, reserve);
+        Work work = createWorkByReserve(reserve.getBarberOrHairdresserId(), reserve);
         newReserve.setWorkId(work.getWorkId());
         newReserve.setWorkToDo(reserve.getWorkToDo());
         newReserve.setWorkTime(Instant.ofEpochMilli(DURATION_WORK));
