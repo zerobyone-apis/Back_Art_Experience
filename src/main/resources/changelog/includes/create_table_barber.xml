@@ -61,4 +61,13 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="add_new_attributes_barber_social_info" author="max3.1994@gmail.com">
+        <addColumn tableName="barbers">
+            <column name="barber_description" type="TEXT"/>
+            <column name="facebook" type="VARCHAR"/>
+            <column name="instagram" type="VARCHAR"/>
+            <column name="url_profile_image" type="TEXT"/>
+            <column name="is_admin" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

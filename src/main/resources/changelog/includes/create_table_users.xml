@@ -22,4 +22,9 @@
                 <column name="status" type="BOOLEAN"/>
         </createTable>
     </changeSet>
+    <changeSet id="add_new_attribute_users_permission" author="max3.1994@gmail.com">
+        <addColumn tableName="users">
+            <column name="is_admin" type="BOOLEAN"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

@@ -64,6 +64,18 @@ public class Barber implements Serializable {
     private Double prestige;
     @Column(name = "is_active") // Borrado logico.
     private Boolean isActive;
+    @Column(name = "is_admin") // User Permission control.
+    private Boolean isAdmin;
+
+    // Social Media information
+    @Column(name = "barber_description")
+    private String barberDescription;
+    @Column(name = "facebook")
+    private String facebook;
+    @Column(name = "instagram")
+    private String instagram;
+    @Column(name = "url_profile_image")
+    private String urlProfileImage;
 
     public Long getLocalId() {
         return localId;
@@ -233,35 +245,84 @@ public class Barber implements Serializable {
         isActive = active;
     }
 
+    public String getBarberDescription() {
+        return barberDescription;
+    }
+
+    public void setBarberDescription(String barberDescription) {
+        this.barberDescription = barberDescription;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getUrlProfileImage() {
+        return urlProfileImage;
+    }
+
+    public void setUrlProfileImage(String urlProfileImage) {
+        this.urlProfileImage = urlProfileImage;
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Barber barber = (Barber) o;
-        return Objects.equals(userId, barber.userId) &&
+        return Objects.equals(barberId, barber.barberId) &&
+                userId.equals(barber.userId) &&
                 username.equals(barber.username) &&
                 password.equals(barber.password) &&
                 email.equals(barber.email) &&
                 cel.equals(barber.cel) &&
-                Objects.equals(startDate, barber.startDate) &&
-                name.equals(barber.name) &&
+                startDate.equals(barber.startDate) &&
+                isAdmin.equals(barber.isAdmin) &&
+                Objects.equals(endDate, barber.endDate) &&
+                Objects.equals(name, barber.name) &&
                 Objects.equals(localId, barber.localId) &&
-                Objects.equals(localName, barber.localName) &&
+                localName.equals(barber.localName) &&
+                Objects.equals(workTime, barber.workTime) &&
+                Objects.equals(cutsTimes, barber.cutsTimes) &&
                 Objects.equals(amountOfCuts, barber.amountOfCuts) &&
                 Objects.equals(amountOfClients, barber.amountOfClients) &&
                 Objects.equals(amountOfComments, barber.amountOfComments) &&
                 Objects.equals(amountOflikesOnComments, barber.amountOflikesOnComments) &&
                 Objects.equals(amountOfShares, barber.amountOfShares) &&
-                Objects.equals(prestige, barber.prestige) &&
-                Objects.equals(amountDailyReserves, barber.amountDailyReserves) &&
-                isActive.equals(barber.isActive);
+                amountDailyReserves.equals(barber.amountDailyReserves) &&
+                prestige.equals(barber.prestige) &&
+                isActive.equals(barber.isActive) &&
+                Objects.equals(barberDescription, barber.barberDescription) &&
+                Objects.equals(facebook, barber.facebook) &&
+                Objects.equals(instagram, barber.instagram) &&
+                Objects.equals(urlProfileImage, barber.urlProfileImage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(barberId, userId, username, password, email, cel, startDate, endDate, name, localId, localName, workTime, cutsTimes, amountOfCuts, amountOfClients, amountOfComments, amountOflikesOnComments, amountOfShares, prestige, amountDailyReserves, isActive);
+        return Objects.hash(barberId, userId, username, password, email, cel, startDate, endDate, name, localId, localName, workTime, cutsTimes, amountOfCuts, amountOfClients, amountOfComments, amountOflikesOnComments, amountOfShares, amountDailyReserves, prestige, isActive,isAdmin, barberDescription, facebook, instagram, urlProfileImage);
     }
-
 }
 
 

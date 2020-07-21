@@ -26,6 +26,8 @@ public class User implements Serializable {
     private Instant deleteOn;
     @Column(name = "status")
     private boolean status;
+    @Column(name = "is_admin")
+    private boolean isAdmin;
 
     public Long getUserId() {
         return userId;
@@ -73,6 +75,14 @@ public class User implements Serializable {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
     @Override
