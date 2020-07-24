@@ -1,9 +1,16 @@
 package com.art.experience.dev.model;
 
 import org.springframework.hateoas.core.Relation;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
-import java.time.*;
+import java.time.Instant;
 import java.util.Objects;
 
 @Entity
@@ -12,7 +19,7 @@ import java.util.Objects;
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "user_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     @SequenceGenerator(name = "user_sequence", allocationSize = 1)
     @Column(name = "user_id")
     private Long userId;
@@ -20,14 +27,21 @@ public class User implements Serializable {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "email")
+    private String email;
+
+
     @Column(name = "create_on")
     private Instant createOn;
     @Column(name = "delete_on")
     private Instant deleteOn;
+
     @Column(name = "status")
-    private boolean status;
+    private Boolean status;
+    @Column(name = "is_barber")
+    private Boolean isBarber;
     @Column(name = "is_admin")
-    private boolean isAdmin;
+    private Boolean isAdmin;
 
     public Long getUserId() {
         return userId;
@@ -51,6 +65,38 @@ public class User implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Boolean isBarber() {
+        return isBarber;
+    }
+
+    public void setBarber(Boolean barber) {
+        isBarber = barber;
+    }
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
     }
 
     public Instant getCreateOn() {
@@ -94,12 +140,13 @@ public class User implements Serializable {
                 Objects.equals(userId, user.userId) &&
                 username.equals(user.username) &&
                 password.equals(user.password) &&
+                email.equals(user.email) &&
                 Objects.equals(createOn, user.createOn) &&
                 Objects.equals(deleteOn, user.deleteOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, username, password, createOn, deleteOn, status);
+        return Objects.hash(userId, username, password, email, createOn, deleteOn, status, isBarber, isAdmin);
     }
 }

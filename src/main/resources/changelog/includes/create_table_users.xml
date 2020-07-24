@@ -27,4 +27,14 @@
             <column name="is_admin" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
+    <changeSet id="add_new_attribute_to_identifier_user" author="max3.1994@gmail.com">
+        <addColumn tableName="users">
+            <column name="is_barber" type="BOOLEAN">
+                <constraints nullable="true"/>
+            </column>
+            <column name="email" type="VARCHAR(150)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

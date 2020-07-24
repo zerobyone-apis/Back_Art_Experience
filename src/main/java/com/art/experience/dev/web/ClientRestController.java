@@ -39,7 +39,7 @@ public class ClientRestController {
     @ResponseStatus(HttpStatus.OK)
     public Client getClientByEmail(@PathVariable("email") final String email) {
       LOGGER.info("Email received: \n", email);
-        return clientService.getClientByEmail(email);
+        return clientService.getByEmail(email);
     }
 
     @PostMapping

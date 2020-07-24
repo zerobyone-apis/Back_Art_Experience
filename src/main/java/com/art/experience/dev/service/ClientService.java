@@ -2,9 +2,9 @@ package com.art.experience.dev.service;
 
 import com.art.experience.dev.data.ClientRepository;
 import com.art.experience.dev.data.UserRepository;
-import com.art.experience.dev.exception.CreateResourceException;
 import com.art.experience.dev.model.Client;
 import com.art.experience.dev.model.User;
+import com.art.experience.dev.service.abstractions.UserAbstractFunctions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class ClientService {
+public class ClientService extends UserAbstractFunctions {
 
     private static final Logger LOGGER = LogManager.getLogger(ClientService.class);
     private final ClientRepository clientRepository;
@@ -27,16 +27,25 @@ public class ClientService {
     @Autowired
     private ClientService(final ClientRepository clientRepository,
                           final UserRepository userRepository) {
+        super(userRepository);
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
     }
 
-
-    public Client getClientByEmail(final String email) {
+    public Client getByEmail(final String email) {
         Optional<Client> client = clientRepository.findByEmail(email);
          if (!client.isPresent()) {
             LOGGER.error("Client Email: [ "+ email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
             throw new ResourceNotFoundException("Client Email: [ "+ email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+        }
+        return client.get();
+    }
+
+    public Client findByUserId(final Long userId) {
+        Optional<Client> client = clientRepository.findByUserId(userId);
+        if (!client.isPresent()) {
+            LOGGER.error("Client User ID: [ "+ userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+            throw new ResourceNotFoundException("Client User ID: [ "+ userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
         }
         return client.get();
     }
@@ -79,7 +88,7 @@ public class ClientService {
             newClient.setStatus(true);
 
             // User Information
-            User user = createUser(client);
+            User user = createGenericUser(Optional.empty(), Optional.of(client), Optional.empty());
             newClient.setUserId(user.getUserId());
 
             return clientRepository.save(newClient);
@@ -124,7 +133,7 @@ public class ClientService {
             updatedClient.setEndDate(Instant.now());
             updatedClient.setStatus(false);
         }
-        updateUser(updatedClient);
+        updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty());
         return clientRepository.save(updatedClient);
     }
 
@@ -155,7 +164,7 @@ public class ClientService {
         }
     }
 
-    private User updateUser(final Client updateClient) {
+ /*   private User updateUser(final Client updateClient) {
         Optional<User> user = userRepository.findById(updateClient.getUserId());
         if(!user.isPresent()){
             LOGGER.error("User not Found");
@@ -179,7 +188,7 @@ public class ClientService {
                 throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
             }
 
-            /****** User Information ********/
+            *//****** User Information ********//*
 
             user.setUsername(client.getUsername());
             user.setPassword(client.getPassword());
@@ -190,5 +199,5 @@ public class ClientService {
             LOGGER.error("Error creating the user. " + e.getMessage());
             throw new CreateResourceException("Error creating the user. " + e.getMessage());
         }
-    }
+    }*/
 }

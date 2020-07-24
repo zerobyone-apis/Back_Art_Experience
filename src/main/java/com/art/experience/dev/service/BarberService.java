@@ -6,8 +6,9 @@ import com.art.experience.dev.data.UserRepository;
 import com.art.experience.dev.exception.CreateResourceException;
 import com.art.experience.dev.model.Barber;
 import com.art.experience.dev.model.BarberShop;
-import com.art.experience.dev.model.Hairdresser;
+import com.art.experience.dev.model.Client;
 import com.art.experience.dev.model.User;
+import com.art.experience.dev.service.abstractions.UserAbstractFunctions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class BarberService {
+public class BarberService extends UserAbstractFunctions {
 
     private static final Logger LOGGER = LogManager.getLogger(BarberService.class);
     private final BarberRepository barberRepository;
@@ -33,9 +34,11 @@ public class BarberService {
     private BarberService(final BarberRepository barberRepository,
                           final UserRepository userRepository,
                           final BarberShopRepository barberShopRepository) {
+        super(userRepository);
         this.barberRepository = barberRepository;
         this.userRepository = userRepository;
         this.barberShopRepository = barberShopRepository;
+
     }
 
     public Barber findByID(final Long barberId) {
@@ -43,6 +46,24 @@ public class BarberService {
         if (!barber.isPresent()) {
             LOGGER.error("Barber ID Not found. " + barberId);
             throw new ResourceNotFoundException("Barber ID Not found. " + barberId);
+        }
+        return barber.get();
+    }
+
+    public Barber findByUserId(final Long userId) {
+        Optional<Barber> barber = barberRepository.findByUserId(userId);
+        if (!barber.isPresent()) {
+            LOGGER.error("Barber with this User ID Not found: " + userId);
+            throw new ResourceNotFoundException("Barber with this User ID Not found: " + userId);
+        }
+        return barber.get();
+    }
+
+    public Barber findByEmail(final String email) {
+        Optional<Barber> barber = barberRepository.findByEmail(email);
+        if (!barber.isPresent()) {
+            LOGGER.error("Barber with this Email Not found: " + email);
+            throw new ResourceNotFoundException("Barber with this Email Not found: " + email);
         }
         return barber.get();
     }
@@ -74,8 +95,7 @@ public class BarberService {
             newBarber.setEmail(barb.getEmail());
             newBarber.setStartDate(Instant.now());
 
-            //* Mutable barber info
-
+            // Mutable barber info
             // Barber shop, find or create
             if (Objects.isNull(barb.getLocalName())) {
                 shop = createBarberShop(barb);
@@ -125,7 +145,7 @@ public class BarberService {
             newBarber.setInstagram(Objects.isNull(barb.getInstagram()) ? "" : barb.getInstagram());
 
             // User Information
-            User user = createUser(barb);
+            User user = createGenericUser(Optional.empty(),Optional.empty(),Optional.of(barb));
             newBarber.setUserId(user.getUserId());
             newBarber.setAdmin(user.isAdmin());
 
@@ -225,7 +245,7 @@ public class BarberService {
             updateBarb.setEndDate(Instant.now());
             updateBarb.setActive(false);
         }
-        User userUpdated = updateUser(updateBarb);
+        User userUpdated = updateGenericUser(Optional.empty(),Optional.empty(),Optional.of(updateBarb));
         updateBarb.setAdmin(userUpdated.isAdmin());
         return barberRepository.save(updateBarb);
     }
@@ -260,7 +280,7 @@ public class BarberService {
         }
     }
 
-    private User createUser(final Barber barb) {
+    /*private User createUser(final Barber barb) {
         User user = new User();
         try {
             Optional<User> checkUser = userRepository.findByUsername(barb.getUsername());
@@ -270,7 +290,7 @@ public class BarberService {
             }
             /****** User Information ********/
 
-            user.setUsername(barb.getUsername());
+         /*   user.setUsername(barb.getUsername());
             user.setPassword(barb.getPassword());
             user.setCreateOn(Instant.now());
             user.setStatus(true);
@@ -284,7 +304,8 @@ public class BarberService {
         }
     }
 
-    private User updateUser(final Barber updateBarb) {
+
+     private User updateUser(final Barber updateBarb) {
         Optional<User> userOpt = userRepository.findById(updateBarb.getUserId());
         if (!userOpt.isPresent()) {
             LOGGER.error("User not Found");
@@ -292,7 +313,7 @@ public class BarberService {
         }
         /****** User Information ********/
         // Update user Obj
-        User user = userOpt.get();
+     /*   User user = userOpt.get();
 
         // Mutable User Info
         user.setUsername(updateBarb.getUsername());
@@ -305,6 +326,6 @@ public class BarberService {
             user.setStatus(false);
         }
         return userRepository.save(user);
-    }
+    }*/
 
 }

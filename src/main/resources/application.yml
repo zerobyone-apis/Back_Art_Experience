@@ -13,15 +13,15 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/artexperiencedb
-    username: postgres
-    password: postgres
+#    url: jdbc:postgresql://localhost:5432/artexperiencedb
+#    username: postgres
+#    password: postgres
 #    url: jdbc:postgresql://tuffi.db.elephantsql.com:5432/znflcgpt
 #    username: znflcgpt
 #    password: FdN1_UUcNthaEXwYGc93F-3sJPmkd1ov
-#    url: jdbc:postgresql://ec2-3-208-50-226.compute-1.amazonaws.com/df6fhohpf8uu3
-#    username: sxutyfndujrygn
-#    password: 2f632044e43443185757006a153c4173a66bdb89f59398194361e54285b76646
+    url: jdbc:postgresql://ec2-34-238-26-109.compute-1.amazonaws.com/d460qlba6iot8u
+    username: fjlzvntraxkgzh
+    password: 382376eea897c0f155377e79cd1cf8f38fb08c0df268f1f55ad9a1a7229170e7
   jpa:
     properties:
       hibernate.jdbc.time_zone: UTC
