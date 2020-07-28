@@ -37,7 +37,7 @@ public class UserRestController {
         return userServices.findUsersById(idUser);
     }
 
-    @GetMapping("/v1/login")
+    @PostMapping("/v1/login")
     @ResponseStatus(HttpStatus.OK)
     public DTOUserLogin login(@RequestBody final DTOUserLogin login) {
         LOGGER.info("Email received: \n", login.getEmail() + " | Password: "+ login.getPassword());
