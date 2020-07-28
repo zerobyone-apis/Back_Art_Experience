@@ -1,5 +1,6 @@
 package com.art.experience.dev.Configuration;
 
+import com.google.common.base.Predicates;
 import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,13 +17,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfiguration {
 
     @Bean
-    public Docket apiDoc() {
+    public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
-                .paths(PathSelectors.any()).build().pathMapping("/swa")
-                .apiInfo(apiInfo())
-                .useDefaultResponseMessages(false);
+                .apis(RequestHandlerSelectors.any())
+                .paths(PathSelectors.any())
+                .build().apiInfo(apiInfo());
     }
 
     @Bean
@@ -33,6 +33,31 @@ public class SwaggerConfiguration {
                 .build();
         return builder.build();
     }
+
+    //FIXME: Se debe implementar seguridad y restricciones de los endpoint del backend
+    //        Autenticarlos y protegerlos.
+    /* @Bean
+    public Docket api() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.withClassAnnotation(Api.class))
+                .paths(PathSelectors.any())
+                .build()
+                .pathMapping("/")
+                .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false);
+
+    return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage(("com.art.experience.dev.web")))
+                .paths(Predicates.or(PathSelectors.regex("/*"), PathSelectors.regex("/*")))
+                .build()
+                .pathMapping("/")
+                .apiInfo(apiInfo())
+                .useDefaultResponseMessages(false);
+    } */
+
+
 
 }
 
