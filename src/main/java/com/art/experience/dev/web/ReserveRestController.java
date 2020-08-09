@@ -1,18 +1,21 @@
 package com.art.experience.dev.web;
 
 import com.art.experience.dev.Configuration.RestCrossOriginController;
+import com.art.experience.dev.model.DTOAvailableTime;
 import com.art.experience.dev.model.DTOBarberReserves;
 import com.art.experience.dev.model.Reserve;
 import com.art.experience.dev.service.ReserveService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestCrossOriginController("/reserve")
@@ -55,6 +58,12 @@ public class ReserveRestController {
         return reserveService.findReserveByBarberID(berberOrHairId);
     }
 
+    @GetMapping("/v1/t/barber/{barb_or_hair_id}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<DTOAvailableTime> getAvailableTimesForBarberId(@PathVariable("barb_or_hair_id") final Long berberOrHairId) {
+        return reserveService.getBarberAvailableTimeByDate(berberOrHairId);
+    }
+
     @PatchMapping("/all/from/barber/byDate")
     @ResponseStatus(HttpStatus.OK)
     public List<Reserve> getAllByBarberIdAndDate(@RequestBody final DTOBarberReserves info) {
@@ -72,6 +81,12 @@ public class ReserveRestController {
     @ResponseStatus(HttpStatus.CREATED)
     public Reserve update(@RequestBody final Reserve reserve) {
         return reserveService.update(reserve);
+    }
+
+    @PatchMapping("/mail")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void testSendMail() {
+        reserveService.testMail();
     }
 
     @PatchMapping("/barber/{id_barber}/isdone/{id_reserve}")

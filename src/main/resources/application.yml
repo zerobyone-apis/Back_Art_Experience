@@ -32,3 +32,20 @@ logging:
   level:
     org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR
 
+reports-reserves:
+  scheduler:
+    enabled: true
+    cron: 0 3 * * * *
+
+mail:
+  username: art.experience.uy.2020@gmail.com
+  password: art_experience_2020
+  to: damianezetiel1@gmail.com, mitsuki-kun@hotmail.com #peraltana.21@gmail.com,max3.1994@gmail.com,smtp.test.zero@gmail.com,
+  host: smtp.gmail.com #host
+  port: 587
+  auth: true
+  enable: true
+  required: true
+  content:
+    subject: "Confirmación de Reserva" #subject-email
+    description:  "Hola [USERNAME], \n\n Gracias por formar parte de Art Experience :rocket: \n Su reserva ah sido agendada correctamente!! \n\nDetalle de la Reserva: \n "#content-text of email

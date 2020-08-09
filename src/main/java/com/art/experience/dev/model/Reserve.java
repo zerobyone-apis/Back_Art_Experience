@@ -1,16 +1,19 @@
 package com.art.experience.dev.model;
 
-import com.art.experience.dev.Configuration.InstantDateJsonFormat;
 import com.art.experience.dev.Configuration.InstantJsonFormat;
 import org.springframework.hateoas.core.Relation;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +28,8 @@ public class Reserve implements Serializable {
     // Reserve identification info
     @Column(name = "reserve_id")
     private Long reserveId;
+    @Column(name = "barber_name")
+    private String barberName;
     @Column(name = "barb_or_hair_id")
     private Long barberOrHairdresserId;
     @Column(name = "client_id")
@@ -242,6 +247,14 @@ public class Reserve implements Serializable {
 
     public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public String getBarberName() {
+        return barberName;
+    }
+
+    public void setBarberName(String barberName) {
+        this.barberName = barberName;
     }
 
     @Override

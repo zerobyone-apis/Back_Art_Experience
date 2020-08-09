@@ -60,4 +60,10 @@
             <column name="is_done" type="BOOLEAN"/>
         </addColumn>
     </changeSet>
+    <changeSet id="Add_new_field_BarberName" author="max3.1994@gmail.com">
+        <!-- barber_name new Field -->
+        <addColumn tableName="reserves">
+            <column name="barber_name" type="VARCHAR(120)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
