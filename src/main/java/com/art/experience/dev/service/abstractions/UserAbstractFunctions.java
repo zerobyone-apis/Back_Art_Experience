@@ -156,8 +156,10 @@ public abstract class UserAbstractFunctions {
     }
 
     private User createOrUpdateUserFromClientOrBarberData(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
+        LOGGER.info("Start User Validation!");
         User newUser = new User();
         if (!user.isEmpty()) {
+            LOGGER.info("User Is Not present! Creating user info . . .");
             newUser.setUserId(Objects.nonNull(user.get().getUserId()) ? user.get().getUserId() : null);
             newUser.setUsername(user.get().getUsername());
             newUser.setPassword(user.get().getPassword());
@@ -170,8 +172,9 @@ public abstract class UserAbstractFunctions {
             } else {
                 newUser.setStatus(true);
             }
-            LOGGER.error("Creating new user for User Directly!");
+            LOGGER.info("User created Directly!");
         } else if (!client.isEmpty()) {
+            LOGGER.info("Client User Is Not present! Creating Client User info . . .");
             newUser.setUserId(Objects.nonNull(client.get().getUserId()) ? client.get().getUserId() : null);
             newUser.setEmail(client.get().getEmail());
             newUser.setUsername(client.get().getUsername());
@@ -179,8 +182,9 @@ public abstract class UserAbstractFunctions {
             newUser.setStatus(true);
             newUser.setAdmin(false);
             newUser.setBarber(false);
-            LOGGER.error("Creating new user for Client!");
+            LOGGER.error("Client User Created!");
         } else if (!barber.isEmpty()) {
+            LOGGER.info("Barber User Is Not present! Creating Barber User info . . .");
             newUser.setUserId(Objects.nonNull(barber.get().getUserId()) ? barber.get().getUserId() : null);
             newUser.setEmail(barber.get().getEmail());
             newUser.setUsername(barber.get().getUsername());
@@ -188,10 +192,10 @@ public abstract class UserAbstractFunctions {
             newUser.setStatus(true);
             newUser.setAdmin(true);
             newUser.setBarber(true);
-            LOGGER.error("Creating new user for Barber!");
+            LOGGER.error("Barber User Created!");
         }
 
-        LOGGER.error("User Created Successfully!! -> user: " + newUser);
+        LOGGER.error("User Created Successfully!! -> User: " + newUser);
         return newUser;
     }
 

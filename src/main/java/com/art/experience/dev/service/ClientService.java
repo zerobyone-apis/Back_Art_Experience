@@ -2,6 +2,7 @@ package com.art.experience.dev.service;
 
 import com.art.experience.dev.data.ClientRepository;
 import com.art.experience.dev.data.UserRepository;
+import com.art.experience.dev.exception.CreateResourceException;
 import com.art.experience.dev.model.Client;
 import com.art.experience.dev.model.User;
 import com.art.experience.dev.service.abstractions.UserAbstractFunctions;
@@ -34,9 +35,9 @@ public class ClientService extends UserAbstractFunctions {
 
     public Client getByEmail(final String email) {
         Optional<Client> client = clientRepository.findByEmail(email);
-         if (!client.isPresent()) {
-            LOGGER.error("Client Email: [ "+ email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
-            throw new ResourceNotFoundException("Client Email: [ "+ email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+        if (!client.isPresent()) {
+            LOGGER.error("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+            throw new ResourceNotFoundException("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
         }
         return client.get();
     }
@@ -44,17 +45,17 @@ public class ClientService extends UserAbstractFunctions {
     public Client findByUserId(final Long userId) {
         Optional<Client> client = clientRepository.findByUserId(userId);
         if (!client.isPresent()) {
-            LOGGER.error("Client User ID: [ "+ userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
-            throw new ResourceNotFoundException("Client User ID: [ "+ userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+            LOGGER.error("Client User ID: [ " + userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+            throw new ResourceNotFoundException("Client User ID: [ " + userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
         }
         return client.get();
     }
 
     public Client findByID(final Long clientId) {
         Optional<Client> client = clientRepository.findById(clientId);
-         if (!client.isPresent()) {
-            LOGGER.error("Client ID: [ "+ clientId +" ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
-            throw new ResourceNotFoundException("Client ID: [ "+ clientId +" ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+        if (!client.isPresent()) {
+            LOGGER.error("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+            throw new ResourceNotFoundException("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
         }
         return client.get();
     }
@@ -72,6 +73,14 @@ public class ClientService extends UserAbstractFunctions {
 
     public Client create(final Client client) {
         Client newClient = new Client();
+
+        LOGGER.error("Start Username Validation");
+        Optional<User> usernameValidation = userRepository.findByUsername(client.getUsername());
+        if (!usernameValidation.isEmpty()) {
+            LOGGER.error(client.getUsername() + " already exists, please try with another Username.");
+            throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
+        }
+
         try {
             // Client information
             newClient.setName(client.getName());
@@ -93,69 +102,93 @@ public class ClientService extends UserAbstractFunctions {
 
             return clientRepository.save(newClient);
         } catch (Exception e) {
-            LOGGER.error("Something failed on the creation of Client. " + e.getMessage());
-            throw new IllegalArgumentException("Something failed on the creation of Client. " + e.getMessage());
+            LOGGER.error("Error creating this client: " + e.getMessage());
+            throw new CreateResourceException("Error creating this client: " + e.getMessage());
         }
     }
 
-    public Client update(final Client clie){
+    public Client update(final Client clie) {
+        LOGGER.info("Start ID Validation");
         Optional<Client> client = clientRepository.findById(clie.getClientId());
-        if(!client.isPresent()){
-            LOGGER.error("Client ID: [ "+ clie.getClientId()+" ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
-            throw new ResourceNotFoundException("Client ID: [ "+ clie.getClientId() +" ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+        if (!client.isPresent()) {
+            LOGGER.error("ID Validation Error: ");
+            LOGGER.error("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+            throw new ResourceNotFoundException("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
         }
+        LOGGER.info("Finish ID Validation Success!");
+
+        LOGGER.info("Start Username Validation");
+        Optional<User> usernameValidation = userRepository.findByUsername(clie.getUsername());
+        if (!usernameValidation.isEmpty()) {
+            LOGGER.error("Username Validation Error: ");
+            LOGGER.error(clie.getUsername() + " already exists, please try with another Username.");
+            throw new CreateResourceException(clie.getUsername() + " already exists, please try with another Username.");
+        }
+        LOGGER.info("Finish Username Validation Success!");
+
         // My new Client Update object
         Client updatedClient = client.get();
 
         /* Immutable client Info
-        *
-        * updatedClient.setUserId(client.get().getUserId());
-        * updatedClient.setClientId(client.get().getClientId());
-        * updatedClient.setStartDate(client.get().getStartDate());
-        *
-        */
+         *
+         * updatedClient.setUserId(client.get().getUserId());
+         * updatedClient.setClientId(client.get().getClientId());
+         * updatedClient.setStartDate(client.get().getStartDate());
+         *
+         */
+        try {
+            // Client Information
+            updatedClient.setUsername(clie.getUsername());
+            updatedClient.setPassword(clie.getPassword());
+            updatedClient.setName(clie.getName());
+            updatedClient.setEmail(clie.getEmail());
+            updatedClient.setCel(clie.getCel());
 
-        // Client Information
-        updatedClient.setUsername(clie.getUsername());
-        updatedClient.setPassword(clie.getPassword());
-        updatedClient.setName(clie.getName());
-        updatedClient.setEmail(clie.getEmail());
-        updatedClient.setCel(clie.getCel());
+            // Analytics Info
+            updatedClient.setInteractions(Objects.isNull(clie.getInteractions()) ? updatedClient.getInteractions() : clie.getInteractions());
+            updatedClient.setAmountReserves(Objects.isNull(clie.getAmountReserves()) ? updatedClient.getAmountReserves() : clie.getAmountReserves());
+            updatedClient.setClientType(Objects.isNull(clie.getClientType()) ? updatedClient.getClientType() : clie.getClientType());
+            updatedClient.setLastDateUpdated(Instant.now());
+            updatedClient.setStatus(true);
 
-        // Analytics Info
-        updatedClient.setInteractions(Objects.isNull(clie.getInteractions()) ? updatedClient.getInteractions() : clie.getInteractions());
-        updatedClient.setAmountReserves(Objects.isNull(clie.getAmountReserves()) ? updatedClient.getAmountReserves() : clie.getAmountReserves());
-        updatedClient.setClientType(Objects.isNull(clie.getClientType()) ? updatedClient.getClientType() : clie.getClientType());
-        updatedClient.setLastDateUpdated(Instant.now());
-        updatedClient.setStatus(true);
+            if (Objects.nonNull(clie.getEndDate())) {
+                updatedClient.setEndDate(Instant.now());
+                updatedClient.setStatus(false);
+            }
 
-        if(Objects.nonNull(clie.getEndDate())){
-            updatedClient.setEndDate(Instant.now());
-            updatedClient.setStatus(false);
+            updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty());
+            return clientRepository.save(updatedClient);
+        } catch (Exception ex) {
+            LOGGER.error("Error updating this client: " + ex.getMessage());
+            throw new CreateResourceException("Error updating this client: " + ex.getMessage());
         }
-        updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty());
-        return clientRepository.save(updatedClient);
     }
 
-    public void logicDelete(final Long clientID){
+    public void logicDelete(final Long clientID) {
         Optional<Client> client = clientRepository.findById(clientID);
-        if (!client.isPresent()){
+        if (!client.isPresent()) {
             LOGGER.error("Client not Found by this ID" + clientID);
             throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
-        }else{
+        } else {
             // Borrado logico
-            client.get().setStatus(false);
-            clientRepository.save(client.get());
+            try {
+                client.get().setStatus(false);
+                clientRepository.save(client.get());
+            } catch (Exception e) {
+                LOGGER.error("Something went wrong deleting Client with this ID " + clientID + ", Error message: " + e.getMessage());
+                throw new ResourceNotFoundException("Something went wrong deleting Client with this ID " + clientID + ", Error message: " + e.getMessage());
+            }
+
         }
     }
 
-    public void delete(final Long clientID){
+    public void delete(final Long clientID) {
         Optional<Client> client = clientRepository.findById(clientID);
 
-        if (!client.isPresent()){
+        if (!client.isPresent()) {
             LOGGER.error("Client not Found by this ID" + clientID);
             throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
-        }else{
+        } else {
             Optional<User> user = userRepository.findById(client.get().getUserId());
             // Se borra el usuario tambien.
             userRepository.delete(user.get());
