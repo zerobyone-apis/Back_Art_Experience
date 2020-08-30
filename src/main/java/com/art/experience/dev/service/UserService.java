@@ -35,8 +35,7 @@ public class UserService extends UserAbstractFunctions {
     }
 
     public DTOUserLogin login(final DTOUserLogin user) {
-        DTOUserLogin dtoUserLoaded = loginUser(user);
-        return dtoUserLoaded;
+        return loginUser(user);
     }
 
     public User createUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
@@ -44,7 +43,7 @@ public class UserService extends UserAbstractFunctions {
     }
 
     public User updateUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
-       return updateGenericUser(user,client,barber);
+       return updateGenericUser(user,client,barber,Optional.empty());
     }
 
     public void deleteUserById(Long idUser) {

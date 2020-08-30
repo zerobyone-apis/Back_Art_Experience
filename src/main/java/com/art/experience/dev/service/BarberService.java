@@ -150,8 +150,7 @@ public class BarberService extends UserAbstractFunctions {
             newBarber.setAdmin(user.isAdmin());
 
             //TODO: Update the barber_shop list si corresponde para este barbero
-            Barber newBarb = updateListIdBabersOnBarberShop(newBarber, shop);
-            return newBarb;
+            return updateListIdBabersOnBarberShop(newBarber, shop);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             throw new CreateResourceException(e.getMessage());
@@ -245,7 +244,7 @@ public class BarberService extends UserAbstractFunctions {
             updateBarb.setEndDate(Instant.now());
             updateBarb.setActive(false);
         }
-        User userUpdated = updateGenericUser(Optional.empty(),Optional.empty(),Optional.of(updateBarb));
+        User userUpdated = updateGenericUser(Optional.empty(),Optional.empty(),Optional.of(updateBarb), Optional.of(barber.get().getUserId()));
         updateBarb.setAdmin(userUpdated.isAdmin());
         return barberRepository.save(updateBarb);
     }

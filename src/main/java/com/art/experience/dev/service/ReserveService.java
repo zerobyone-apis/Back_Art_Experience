@@ -61,13 +61,13 @@ public class ReserveService {
     }
 
     // Duration Time 40 minutes
-    private final Long DURATION_WORK = 2400000l;
+    private final Long DURATION_WORK = 2400000L;
     private final String UPDATE_RESERVE_PARAM = ", Update Reserve";
     private final String CREATE_RESERVE_PARAM = ", New Reserve";
 
     public Reserve findByID(final Long reserveId) {
         Optional<Reserve> reserve = reservesRepository.findById(reserveId);
-        if (!reserve.isPresent()) {
+        if (reserve.isEmpty()) {
             LOGGER.error("Reserve ID Not found. " + reserveId);
             throw new ResourceNotFoundException("Reserve ID Not found. " + reserveId);
         }
@@ -87,7 +87,7 @@ public class ReserveService {
 
     public List<Reserve> findReserveByBarberID(final Long berberOrHairId) {
         Optional<List<Reserve>> reserve = reservesRepository.findByBarberOrHairdresserId(berberOrHairId);
-        if (!reserve.isPresent()) {
+        if (reserve.isEmpty()) {
             LOGGER.error("Barber ID Not found. " + berberOrHairId);
             throw new ResourceNotFoundException("Barber ID Not found. " + berberOrHairId);
         }
@@ -113,7 +113,7 @@ public class ReserveService {
         }
         return reserves.stream()
                 .map(reserve -> reserve)
-                .filter(reserve -> reserve.getActive() == true)
+                .filter(Reserve::getActive)
                 .collect(Collectors.toList());
     }
 
@@ -144,7 +144,7 @@ public class ReserveService {
 
         LOGGER.info("LISTING DTO OF AVAILABLE DATETIMES");
         results.forEach((date, time) -> {
-            // TODO: Convert hasmap to DTO object
+            // TODO: Convert hashmap to DTO object
             DTOAvailableTime dayAvailable = new DTOAvailableTime();
             dayAvailable.setDate(date);
             dayAvailable.setHours(time);
@@ -158,39 +158,37 @@ public class ReserveService {
 
     private List<LocalDateTime> getFilteredDateTimes(List<Reserve> reservesByBarber) {
         LOGGER.error("FILTERED LIST DATETIMES LIST");
-        List<LocalDateTime> dateTimes = reservesByBarber
+        return reservesByBarber
                 .stream()
                 .map(Reserve::getStartTime)
                 .sorted()
                 .collect(Collectors.toList());
-        return dateTimes;
     }
 
     private List<LocalDate> getFilteredDates(List<LocalDateTime> dateTimes, LocalDateTime updateDate) {
         LOGGER.error("START FILTERING DATETIMES TO DATES LIST");
-        List<LocalDate> filteredDates = dateTimes.stream()
+        return dateTimes.stream()
                 .sorted()
                 .filter(date -> date.isAfter(updateDate))
                 .map(LocalDateTime::toLocalDate)
                 .distinct()
                 .collect(Collectors.toList());
-        return filteredDates;
     }
 
     private HashMap<LocalDate, List<LocalTime>> getHashMapOfDates(List<LocalDateTime> dateTimes, List<LocalDate> filteredDates) {
         LOGGER.info("CREATE HASH MAP WITH DATES AND LIST OF AVAILABLE TIMES");
         HashMap<LocalDate, List<LocalTime>> availableTimePerDay = new HashMap<>();
         dateTimes.stream().sorted().forEach((dateTime) -> {
-            for (LocalDate unicDay : filteredDates) {
+            for (LocalDate specificDay : filteredDates) {
                 //TODO: CREATE HOURS LIST FOR EACH DAY
                 List<LocalTime> hours = new ArrayList<>();
 
                 for (LocalDateTime listDateTime : dateTimes) {
-                    if (unicDay.equals(listDateTime.toLocalDate())) {
+                    if (specificDay.equals(listDateTime.toLocalDate())) {
                         hours.add(dateTime.toLocalTime());
                     }
-                    //TODO: ADD TO HASHMAP THE KEY VALUE -> UNICDAY, LIST<HOURS> FOR THAT DAY
-                    availableTimePerDay.put(unicDay, hours);
+                    //TODO: ADD TO HASHMAP THE KEY VALUE -> UNICS_DAY, LIST<HOURS> FOR THAT DAY
+                    availableTimePerDay.put(specificDay, hours);
                 }
             }
         });
@@ -228,7 +226,7 @@ public class ReserveService {
         //Sets times
         convertInstantToFormatString(newReserve, reserve);
 
-        /*TODO: CREAR ENUMERADO QUE WORKS CON 1-NAME_WORK 2-TIME_WORK 3-PRICE_WORK*/
+        /*TODO: MAKE ENUMERATE QUE WORKS CON 1-NAME_WORK 2-TIME_WORK 3-PRICE_WORK*/
         // Work or Service info
         Work work = createWorkByReserve(reserve.getBarberOrHairdresserId(), reserve);
         newReserve.setWorkId(work.getWorkId());
@@ -256,7 +254,7 @@ public class ReserveService {
         clientValidationExists(updateReserve.getClientId(), UPDATE_RESERVE_PARAM);
 
         Optional<Reserve> reserve = reservesRepository.findById(updateReserve.getReserveId());
-        if (!reserve.isPresent()) {
+        if (reserve.isEmpty()) {
             LOGGER.error("Reserve not Found");
             throw new ResourceNotFoundException("Reserve not Found with this ID " + updateReserve.getReserveId());
         }
@@ -296,9 +294,9 @@ public class ReserveService {
 
     public Reserve cancel(final Long idClient, final Long idReserve) {
         Optional<Client> clientExist = clientRepository.findById(idClient);
-        if (!clientExist.isEmpty()) {
+        if (clientExist.isPresent()) {
             Optional<Reserve> reserve = reservesRepository.findById(idReserve);
-            if (!reserve.isPresent()) {
+            if (reserve.isEmpty()) {
                 LOGGER.error("Cancel method: Reserve not Found with this ID:" + idReserve);
                 throw new ResourceNotFoundException("Reserve not Found with this ID: " + idReserve);
             }
@@ -321,9 +319,9 @@ public class ReserveService {
 
     public Reserve isDone(final Long idBarber, final Long idReserve) {
         Optional<Barber> barberExist = barberRepository.findById(idBarber);
-        if (!barberExist.isEmpty()) {
+        if (barberExist.isPresent()) {
             Optional<Reserve> reserve = reservesRepository.findById(idReserve);
-            if (!reserve.isPresent()) {
+            if (reserve.isEmpty()) {
                 LOGGER.error("IsDone method: Reserve not Found with this ID:" + idReserve);
                 throw new ResourceNotFoundException("Reserve not Found with this ID: " + idReserve);
             }
@@ -354,7 +352,7 @@ public class ReserveService {
             }
         }
         Optional<Reserve> reserveToDelete = reservesRepository.findById(reserveID);
-        if (!reserveToDelete.isPresent()) {
+        if (reserveToDelete.isEmpty()) {
             LOGGER.error("Delete Reserve: Reserve not Found by this ID" + reserveID);
             throw new ResourceNotFoundException("Reserve not Found by this ID" + reserveID);
         } else {

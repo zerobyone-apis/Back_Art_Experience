@@ -23,6 +23,8 @@ public class User implements Serializable {
     @SequenceGenerator(name = "user_sequence", allocationSize = 1)
     @Column(name = "user_id")
     private Long userId;
+    @Column(name = "social_number")
+    private Long socialNumber;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
@@ -42,6 +44,18 @@ public class User implements Serializable {
     private Boolean isBarber;
     @Column(name = "is_admin")
     private Boolean isAdmin;
+
+    public Long getSocialNumber() {
+        return socialNumber;
+    }
+
+    public void setSocialNumber(Long socialNumber) {
+        this.socialNumber = socialNumber;
+    }
+
+    public Boolean getBarber() {
+        return isBarber;
+    }
 
     public Long getUserId() {
         return userId;

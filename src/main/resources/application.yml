@@ -13,9 +13,15 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
+#   Local DB Connections
 #    url: jdbc:postgresql://localhost:5432/artexperiencedb
 #    username: postgres
 #    password: postgres
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: zerobyone
+#    password: postgres
+
+#    Production DB Connections
 #    url: jdbc:postgresql://tuffi.db.elephantsql.com:5432/znflcgpt
 #    username: znflcgpt
 #    password: FdN1_UUcNthaEXwYGc93F-3sJPmkd1ov
