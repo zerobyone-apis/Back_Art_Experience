@@ -25,9 +25,9 @@ spring:
 #    url: jdbc:postgresql://tuffi.db.elephantsql.com:5432/znflcgpt
 #    username: znflcgpt
 #    password: FdN1_UUcNthaEXwYGc93F-3sJPmkd1ov
-    url: jdbc:postgresql://ec2-34-238-26-109.compute-1.amazonaws.com/d460qlba6iot8u
-    username: fjlzvntraxkgzh
-    password: 382376eea897c0f155377e79cd1cf8f38fb08c0df268f1f55ad9a1a7229170e7
+    url: jdbc:postgresql://ec2-107-22-33-173.compute-1.amazonaws.com/dc0qftausnmqqq
+    username: slqmhvtcjhegly
+    password: 919b9572bfe734bd3591caf59aa07c7192f69db9730fcd45c5e81cd693d20b48
   jpa:
     properties:
       hibernate.jdbc.time_zone: UTC
