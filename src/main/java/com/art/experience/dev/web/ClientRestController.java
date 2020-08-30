@@ -25,13 +25,14 @@ public class ClientRestController {
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public List<Client> getClients() {
+        LOGGER.info("Getting Clients. . . (> ° ^ °)> ");
         return clientService.getClients();
     }
 
     @GetMapping("/{id_client}")
     @ResponseStatus(HttpStatus.OK)
     public Client getById(@PathVariable("id_client") final Long idClient) {
-      LOGGER.info("Email received: \n", idClient);
+        LOGGER.info("ID Client received: \n", idClient);
         return clientService.findByID(idClient);
     }
 
@@ -45,29 +46,29 @@ public class ClientRestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody final Client client) {
-      LOGGER.info("Object received: \n", client);
+        LOGGER.info("Client received: \n", "username: " + client.getUsername() + ", email: " + client.getEmail());
         return clientService.create(client);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client update(@RequestBody final Client client) {
-      LOGGER.info("Object received: \n", client);
+      LOGGER.info("Client received: \n", "username: " + client.getUsername() + ", email: " + client.getEmail());
         return clientService.update(client);
     }
 
     @DeleteMapping("/logic/{id_client}")
     @ResponseStatus(HttpStatus.OK)
     public void logicDeleteByIdClient(@PathVariable("id_client") final Long client) {
-      LOGGER.info("Object received: \n", client);
+        LOGGER.info("ID Client received: \n", "Client ID: " + client);
         clientService.logicDelete(client);
     }
 
     @DeleteMapping("/{id_client}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteByIdClient(@PathVariable("id_client") final Long client) {
-      LOGGER.info("ID received: \n", client);
-        clientService.delete(client);
+        LOGGER.info("ID Client received: \n", "Client ID: " + client);
+       clientService.delete(client);
     }
 
 }

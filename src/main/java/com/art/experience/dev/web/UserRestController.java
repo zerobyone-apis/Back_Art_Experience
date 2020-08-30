@@ -33,14 +33,14 @@ public class UserRestController {
     @GetMapping("/{id_user}")
     @ResponseStatus(HttpStatus.OK)
     public User getById(@PathVariable("id_user") final Long idUser) {
-        LOGGER.info("User Id received -> \n" , idUser);
+        LOGGER.info("ID User received -> \n" , idUser);
         return userServices.findUsersById(idUser);
     }
 
     @PostMapping("/v1/login")
     @ResponseStatus(HttpStatus.OK)
     public DTOUserLogin login(@RequestBody final DTOUserLogin login) {
-        LOGGER.info("Email received: \n", login.getEmail() + " | Password: "+ login.getPassword());
+        LOGGER.info("DTO Received: \n", login.getEmail() + " | Password: "+ login.getPassword() + " | Social Number: "+ login.getSocialNumber());
         return userServices.login(login);
     }
 

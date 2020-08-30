@@ -37,6 +37,8 @@ public abstract class UserAbstractFunctions {
 		this.userRepository = userRepository;
 	}
 
+	private final Long FIRST_SOCIAL_NUMBER = 1L;
+
 	public DTOUserLogin loginUser(final DTOUserLogin user) {
 		User userResponse = new User();
 		try {
@@ -99,13 +101,13 @@ public abstract class UserAbstractFunctions {
 		try {
 			LOGGER.error("Start Username Validation");
 			Optional<User> usernameValidation = userRepository.findByUsername(newUser.getUsername());
-			if (!usernameValidation.isEmpty()) {
+			if (usernameValidation.isPresent()) {
 				LOGGER.error(newUser.getUsername() + " already exists, please try with another Username.");
 				throw new CreateResourceException(newUser.getUsername() + " already exists, please try with another Username.");
 			} else {
 				LOGGER.error("Start Email Validation");
 				Optional<User> emailValidationUser = userRepository.findByEmail(newUser.getUsername());
-				if (!emailValidationUser.isEmpty()) {
+				if (emailValidationUser.isPresent()) {
 					LOGGER.error(newUser.getEmail() + " already exists, please try with another Email.");
 					throw new CreateResourceException(newUser.getEmail() + " already exists, please try with another Email.");
 				}
@@ -173,8 +175,9 @@ public abstract class UserAbstractFunctions {
 			newUser.setUsername(user.get().getUsername());
 			newUser.setPassword(user.get().getPassword());
 			newUser.setAdmin(!Objects.isNull(user.get().isAdmin()));
-			newUser.setBarber(Objects.isNull(user.get().isBarber()) ? false : true);
+			newUser.setBarber(!Objects.isNull(user.get().isBarber()));
 			newUser.setCreateOn(Objects.isNull(user.get().getCreateOn()) ? Instant.now() : user.get().getCreateOn());
+
 			if (Objects.nonNull(user.get().getDeleteOn())) {
 				user.get().setDeleteOn(Instant.now());
 				user.get().setStatus(false);
@@ -184,7 +187,7 @@ public abstract class UserAbstractFunctions {
 
 			// Set social Number
 			Long maxValue = userRepository.getLatestSocialNumber();
-			if (Objects.nonNull(maxValue)){
+			if (Objects.nonNull(maxValue)) {
 				newUser.setSocialNumber(maxValue + 1);
 			}
 
@@ -195,20 +198,31 @@ public abstract class UserAbstractFunctions {
 			newUser.setEmail(client.get().getEmail());
 			newUser.setUsername(client.get().getUsername());
 			newUser.setPassword(client.get().getPassword());
-			newUser.setStatus(true);
 			newUser.setAdmin(false);
 			newUser.setBarber(false);
+			newUser.setCreateOn(Objects.isNull(client.get().getStartDate()) ? Instant.now() : client.get().getStartDate());
 
 			// Set social Number
 			// validate in case of update this number should be not empty
-			if(socialNumber.isEmpty()){
+			if (socialNumber.isEmpty()) {
 				Long maxValue = userRepository.getLatestSocialNumber();
-				if (Objects.nonNull(maxValue)){
+				if (Objects.isNull(maxValue)) {
+					LOGGER.info("Set first social Number!!!! " + FIRST_SOCIAL_NUMBER);
+					newUser.setSocialNumber(FIRST_SOCIAL_NUMBER);
+				} else {
 					newUser.setSocialNumber(maxValue + 1);
 				}
-			}else{
+			} else {
 				newUser.setSocialNumber(socialNumber.get());
 			}
+			// Check if Delete Date appear e.e
+			if (Objects.nonNull(client.get().getEndDate())) {
+				newUser.setDeleteOn(Instant.now());
+				newUser.setStatus(false);
+			} else {
+				newUser.setStatus(true);
+			}
+
 			LOGGER.error("Client User Created!");
 		} else if (!barber.isEmpty()) {
 			LOGGER.info("Barber User Is Not present! Creating Barber User info . . .");
@@ -219,21 +233,33 @@ public abstract class UserAbstractFunctions {
 			newUser.setStatus(true);
 			newUser.setAdmin(true);
 			newUser.setBarber(true);
+			newUser.setCreateOn(Objects.isNull(barber.get().getStartDate()) ? Instant.now() : barber.get().getStartDate());
 
 			// Set social Number
 			// validate in case of update this number should be not empty
-			if(socialNumber.isEmpty()){
+			if (socialNumber.isEmpty()) {
 				Long maxValue = userRepository.getLatestSocialNumber();
-				if (Objects.nonNull(maxValue)){
+				if (Objects.isNull(maxValue)) {
+					LOGGER.info("Set first social Number!!!! " + FIRST_SOCIAL_NUMBER);
+					newUser.setSocialNumber(FIRST_SOCIAL_NUMBER);
+				} else {
+					LOGGER.info("Set Social Number: N° " + (maxValue + 1));
 					newUser.setSocialNumber(maxValue + 1);
 				}
-			}else{
+			} else {
 				newUser.setSocialNumber(socialNumber.get());
 			}
-			LOGGER.error("Barber User Created!");
-		}
 
-		LOGGER.error("User Created Successfully!! -> User: " + newUser);
+			// Check if Delete Date appear e.e
+			if (Objects.nonNull(barber.get().getEndDate())) {
+				newUser.setDeleteOn(Instant.now());
+				newUser.setStatus(false);
+			} else {
+				newUser.setStatus(true);
+			}
+			LOGGER.info("Barber User Created!");
+		}
+		LOGGER.info("Us0er Created Successfully!! -> User: " + newUser);
 		return newUser;
 	}
 

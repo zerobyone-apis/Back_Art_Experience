@@ -76,7 +76,7 @@ public class ClientService extends UserAbstractFunctions {
 
         LOGGER.error("Start Username Validation");
         Optional<User> usernameValidation = userRepository.findByUsername(client.getUsername());
-    if (!usernameValidation.isPresent()) {
+    if (usernameValidation.isPresent()) {
             LOGGER.error(client.getUsername() + " already exists, please try with another Username.");
             throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
         }
