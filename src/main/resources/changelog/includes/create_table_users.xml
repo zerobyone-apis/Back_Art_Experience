@@ -39,7 +39,7 @@
     </changeSet>
     <changeSet id="add_new_attribute_to_identifier_user_social_number" author="max3.1994@gmail.com">
         <addColumn tableName="users">
-            <column name="social_number" type="BIGINT">
+            <column name="social_number" type="BIGINT" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
