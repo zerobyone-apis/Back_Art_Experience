@@ -45,7 +45,7 @@ public class ClientRestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Client create(@RequestBody final Client client) {
-      LOGGER.info("Email received: \n", client);
+      LOGGER.info("Object received: \n", client);
         return clientService.create(client);
     }
 

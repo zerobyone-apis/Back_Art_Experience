@@ -8,54 +8,63 @@ import java.util.PrimitiveIterator;
 
 public class DTOUserLogin {
 
-    //private String username;
-    private String email;
-    private String password;
+	//private String username;
+	private String email;
+	private Long socialNumber;
+	private String password;
 
-    private User user;
-    private Client client;
-    private Barber barber;
+	private User user;
+	private Client client;
+	private Barber barber;
 
-    DTOUserLogin() {
-    }
+	DTOUserLogin() {
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public Long getSocialNumber() {
+		return socialNumber;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
-    public Client getClient() {
-        return client;
-    }
+	public void setSocialNumber(Long socialNumber) {
+		this.socialNumber = socialNumber;
+	}
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public Barber getBarber() {
-        return barber;
-    }
+	public Client getClient() {
+		return client;
+	}
 
-    public void setBarber(Barber barber) {
-        this.barber = barber;
-    }
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	public Barber getBarber() {
+		return barber;
+	}
+
+	public void setBarber(Barber barber) {
+		this.barber = barber;
+	}
 }

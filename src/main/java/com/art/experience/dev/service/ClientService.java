@@ -76,7 +76,7 @@ public class ClientService extends UserAbstractFunctions {
 
         LOGGER.error("Start Username Validation");
         Optional<User> usernameValidation = userRepository.findByUsername(client.getUsername());
-        if (!usernameValidation.isEmpty()) {
+    if (!usernameValidation.isPresent()) {
             LOGGER.error(client.getUsername() + " already exists, please try with another Username.");
             throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
         }
@@ -156,7 +156,7 @@ public class ClientService extends UserAbstractFunctions {
                 updatedClient.setStatus(false);
             }
 
-            updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty());
+            updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty(), Optional.of(client.get().getUserId()));
             return clientRepository.save(updatedClient);
         } catch (Exception ex) {
             LOGGER.error("Error updating this client: " + ex.getMessage());

@@ -17,4 +17,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password")
     Optional<User> findByEmailAndPassword(@Param("email") final String email, @Param("password") final String password);
+
+    @Query(value = "SELECT u FROM User u WHERE u.socialNumber = :socialNumber AND u.password = :password")
+    Optional<User> findBySocialNumberAndPassword(@Param("socialNumber") final Long socialNumber, @Param("password") final String password);
+
+    @Query(value = "SELECT MAX(social_number) FROM users u", nativeQuery = true)
+    Long getLatestSocialNumber();
 }

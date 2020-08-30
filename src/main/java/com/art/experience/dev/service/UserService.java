@@ -44,7 +44,7 @@ public class UserService extends UserAbstractFunctions {
     }
 
     public User updateUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
-       return updateGenericUser(user,client,barber);
+       return updateGenericUser(user,client,barber,Optional.empty());
     }
 
     public void deleteUserById(Long idUser) {

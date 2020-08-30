@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    
+    <changeSet id="add_foreign_key_barbers" author="max3.1994@gmail.com">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="barbers"
+                                 constraintName="fk_barbers_and_users"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="CASCADE"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="user_id"
+                                 referencedTableName="users"/>
+
+<!--        <addForeignKeyConstraint baseColumnNames="shop_id"-->
+<!--                                 baseTableName="barbers"-->
+<!--                                 constraintName="fk_barbers_and_shop_id"-->
+<!--                                 deferrable="false"-->
+<!--                                 initiallyDeferred="false"-->
+<!--                                 onDelete="CASCADE"-->
+<!--                                 onUpdate="NO ACTION"-->
+<!--                                 referencedColumnNames="shop_id"-->
+<!--                                 referencedTableName="barber_shop"/>-->
+
+<!--        <addForeignKeyConstraint baseColumnNames="barber_id"-->
+<!--                                 baseTableName="barbers"-->
+<!--                                 constraintName="fk_barbers_and_shop_barber_id"-->
+<!--                                 deferrable="false"-->
+<!--                                 initiallyDeferred="false"-->
+<!--                                 onDelete="CASCADE"-->
+<!--                                 onUpdate="NO ACTION"-->
+<!--                                 referencedColumnNames="barber_id"-->
+<!--                                 referencedTableName="barber_shop"/>-->
+
+<!--        <addForeignKeyConstraint baseColumnNames="barber_id"-->
+<!--                                 baseTableName="barbers"-->
+<!--                                 constraintName="fk_barbers_and_barber_works"-->
+<!--                                 deferrable="false"-->
+<!--                                 initiallyDeferred="false"-->
+<!--                                 onDelete="CASCADE"-->
+<!--                                 onUpdate="NO ACTION"-->
+<!--                                 referencedColumnNames="barber_id"-->
+<!--                                 referencedTableName="barber_works"/>-->
+
+    </changeSet>
+
+</databaseChangeLog>
