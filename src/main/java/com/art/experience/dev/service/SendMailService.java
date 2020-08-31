@@ -20,6 +20,7 @@ import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -43,9 +44,13 @@ public class SendMailService {
         this.description = description;
     }
 
-    public void notifyAndSendEmail(final String detailsEmails, final String username, final String dateTimesReserve) {
+    public void notifyAndSendEmail(final String detailsEmails,
+                                   final String username,
+                                   final String dateTimesReserve,
+                                   final String clientEmail) {
         LOGGER.info("STARTING SEND EMAIL PROCESS (> 0 _ 0 )> . . .  ");
-        Optional<MimeMessage> mailContent = buildContentMail(detailsEmails, description, subject, username, dateTimesReserve);
+        Optional<MimeMessage> mailContent =
+                buildContentMail(detailsEmails, description, subject, username, dateTimesReserve, clientEmail);
         mailContent.ifPresent(this::connectAndSendEmail);
     }
 
@@ -53,15 +58,17 @@ public class SendMailService {
                                                    final String description,
                                                    final String subject,
                                                    final String username,
-                                                   final String dateTimesReserve) {
+                                                   final String dateTimesReserve,
+                                                   final String clientEmail) {
         try {
             LOGGER.info("BUILDING EMAIL CONTENT BY MULTIPARTS BODY ( W_W )? . . .  ");
-            MimeMessage mailContent = buildContentTextMail(subject, detailsEmails);
+            MimeMessage mailContent = buildContentTextMail(subject, detailsEmails, clientEmail);
 
             // Se crea la part que contendra el texto de las reserva con la descripcion.
             // Podria ir perfectamente el detalle de la reserva.
             LOGGER.info("CREATING MULTIPART OF EMAIL TEXT");
-            MimeBodyPart partOfContentText = getContentPartAddTheText(detailsEmails, description, username, dateTimesReserve);
+            MimeBodyPart partOfContentText =
+                    getContentPartAddTheText(detailsEmails, description, username, dateTimesReserve);
 
 
             // TODO:Aca se crea la el archivo a enviar en caso de enviar uno.
@@ -99,12 +106,13 @@ public class SendMailService {
     }
 
     private MimeMessage buildContentTextMail(final String subject,
-                                             final String detailsEmail) throws MessagingException {
+                                             final String detailsEmail,
+                                             final String clientEmail) throws MessagingException {
         LOGGER.info("CREATING CONTENT EMAIL . . . ");
         MimeMessage mailContent = new MimeMessage(mailSession);
         mailContent.setSubject(subject);
         //mailContent.setText(detailsEmail);
-        setListOfAddresses(mailContent);
+        setListOfAddresses(mailContent, clientEmail);
         return mailContent;
     }
 
@@ -134,8 +142,17 @@ public class SendMailService {
         return partOfContentText;
     }
 
-    private void setListOfAddresses(final MimeMessage mailContent) {
+    private void setListOfAddresses(final MimeMessage mailContent, final String clientEmail) {
         try {
+            // List of Addresses
+            ArrayList<String> addresses = new ArrayList<>();
+            LOGGER.info("Address added -> " + clientEmail);
+            addresses.add(clientEmail);
+            for (String address : mailProperties.getTo()) {
+                LOGGER.info("Address added -> " + address);
+                addresses.add(address);
+            }
+
             mailContent.setFrom(new InternetAddress(mailProperties.getUsername()));
             InternetAddress[] listAddresses = new InternetAddress[mailProperties.getTo().length];
             for (int i = 0; i < mailProperties.getTo().length; i++) {
