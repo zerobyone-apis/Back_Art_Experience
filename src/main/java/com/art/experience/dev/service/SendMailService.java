@@ -1,6 +1,7 @@
 package com.art.experience.dev.service;
 
 import com.art.experience.dev.Configuration.MailPropertiesConfig;
+import com.art.experience.dev.exception.CreateResourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +32,20 @@ public class SendMailService {
     private final Session mailSession;
     private final MailPropertiesConfig mailProperties;
     private final String subject;
+    private final String contactMail;
     private final String description;
 
     @Autowired
     public SendMailService(final MailPropertiesConfig mailProperties,
                            final Session mailSession,
                            @Value("${mail.content.subject}") final String subject,
+                           @Value("${mail.contact.recipient.to}") final String contactMail,
                            @Value("${mail.content.description}") final String description) {
         this.mailProperties = mailProperties;
         this.mailSession = mailSession;
         this.subject = subject;
         this.description = description;
+        this.contactMail = contactMail;
     }
 
     public void notifyAndSendEmail(final String detailsEmails,
@@ -52,6 +56,33 @@ public class SendMailService {
         Optional<MimeMessage> mailContent =
                 buildContentMail(detailsEmails, description, subject, username, dateTimesReserve, clientEmail);
         mailContent.ifPresent(this::connectAndSendEmail);
+    }
+
+    public void contactEmail(final String description, final String subjectMessage, final String emailFrom) {
+        LOGGER.info("STARTING SEND EMAIL PROCESS (> 0 _ 0 )> . . .  ");
+        try {
+            LOGGER.info("CREATING CONTENT EMAIL . . . ");
+            MimeMessage mailContent = new MimeMessage(mailSession);
+            mailContent.setSubject(subjectMessage);
+            setListOfAddresses(mailContent, emailFrom);
+
+            LOGGER.info("BUILDING EMAIL CONTENT BY MIME BODY PART ( W_W )? . . .  ");
+            MimeBodyPart partOfContentText = new MimeBodyPart();
+            partOfContentText.setContent(description, "text/plain");
+
+            LOGGER.info("BUILDING THE MULTIPART TO THE BODY EMAIL . . .");
+            Multipart multipartOfMail = new MimeMultipart();
+            multipartOfMail.addBodyPart(partOfContentText);
+
+            LOGGER.info("ADDING THE MULTIPART TO THE EMAIL . . .");
+            mailContent.setContent(multipartOfMail);
+
+            connectAndSendEmail(mailContent);
+        } catch (MessagingException e) {
+            LOGGER.error("Error creating and sending the contact email " + e.getMessage());
+            throw new CreateResourceException("Something was wrong sending this email error message: " + e.getLocalizedMessage());
+        }
+
     }
 
     private Optional<MimeMessage> buildContentMail(final String detailsEmails,
