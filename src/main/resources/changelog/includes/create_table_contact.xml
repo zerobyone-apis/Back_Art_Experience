@@ -23,11 +23,11 @@
             <column name="full_name" type="VARCHAR(200)"/>
             <column name="cel_phone" type="VARCHAR(50)"/>
             <column name="subject" type="VARCHAR(200)"/>
-            <column name="description" type="VARCHAR(MAX)"/>
+            <column name="description" type="VARCHAR(2000)"/>
             <column name="email_from" type="VARCHAR(200)"/>
             <column name="email_to" type="VARCHAR(200)"/>
 
-            <column name="create_on" type="TIMESTAMP WITH TIME ZONE">
+            <column name="created_on" type="TIMESTAMP WITH TIME ZONE">
                 <constraints nullable="false"/>
             </column>
         </createTable>
