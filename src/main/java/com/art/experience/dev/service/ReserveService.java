@@ -469,6 +469,8 @@ public class ReserveService {
              * Formato del Spliter ser separado por coma -> ' , '
              *
              * */
+            //TODO: In future add some logic to count how many of one types actions have, to manage better the string caracter lenght.
+            //      What we need is clasificate if have 100 = new reserve -> [ Vitaly Client Level ] this person is a great client, etc.
             clientExist.get().setInteractions(clientExist.get().getInteractions() + actionClient);
             clientRepository.save(clientExist.get());
         }

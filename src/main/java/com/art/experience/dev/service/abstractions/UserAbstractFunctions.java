@@ -7,12 +7,13 @@ import com.art.experience.dev.model.Client;
 import com.art.experience.dev.model.DTOUserLogin;
 import com.art.experience.dev.model.User;
 import com.art.experience.dev.service.BarberService;
-import com.art.experience.dev.service.ClientService;
+import com.art.experience.dev.service.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.exception.SQLGrammarException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.json.JsonSchema;
+
 
 import java.time.Instant;
 import java.util.Objects;

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -64,7 +65,7 @@ public class SendMailService {
             LOGGER.info("CREATING CONTENT EMAIL . . . ");
             MimeMessage mailContent = new MimeMessage(mailSession);
             mailContent.setSubject(subjectMessage);
-            setListOfAddresses(mailContent, emailFrom);
+            setListOfAddresses(mailContent, emailFrom, true);
 
             LOGGER.info("BUILDING EMAIL CONTENT BY MIME BODY PART ( W_W )? . . .  ");
             MimeBodyPart partOfContentText = new MimeBodyPart();
@@ -143,7 +144,7 @@ public class SendMailService {
         MimeMessage mailContent = new MimeMessage(mailSession);
         mailContent.setSubject(subject);
         //mailContent.setText(detailsEmail);
-        setListOfAddresses(mailContent, clientEmail);
+        setListOfAddresses(mailContent, clientEmail, true);
         return mailContent;
     }
 
@@ -173,18 +174,33 @@ public class SendMailService {
         return partOfContentText;
     }
 
-    private void setListOfAddresses(final MimeMessage mailContent, final String clientEmail) {
+    private void setListOfAddresses(final MimeMessage mailContent, final String clientEmail, final boolean isContactMail) {
         try {
-            // List of Addresses
-            ArrayList<String> addresses = new ArrayList<>();
-            LOGGER.info("Address added -> " + clientEmail);
-            addresses.add(clientEmail);
-            for (String address : mailProperties.getTo()) {
-                LOGGER.info("Address added -> " + address);
-                addresses.add(address);
+            if (isContactMail) {
+                setListOfInternetAddresses(clientEmail, mailContent, true);
+            } else {
+                setListOfInternetAddresses("", mailContent, false);
             }
+        } catch (AddressException ex) {
+            LOGGER.error("ERROR FROM ADDRESS EXCEPTION INDEX OF ERROR: " + ex.getMessage());
+        } catch (MessagingException ex) {
+            LOGGER.error("ERROR SENDING EMAIL INDEX OF ERROR: " + ex.getMessage());
+        }
+    }
 
-            mailContent.setFrom(new InternetAddress(mailProperties.getUsername()));
+    private void setListOfInternetAddresses(final String clientEmail, final MimeMessage mailContent, final boolean isContactMail) throws MessagingException {
+        mailContent.setFrom(new InternetAddress(mailProperties.getUsername()));
+
+        // New Array Emails
+        if (isContactMail) {
+            InternetAddress client = new InternetAddress(clientEmail);
+            InternetAddress enterprise = new InternetAddress(contactMail);
+            mailContent.setRecipient(Message.RecipientType.TO, client);
+            LOGGER.info("Adding recipient To sent -> " + client.getAddress());
+            mailContent.setRecipient(Message.RecipientType.CC, enterprise);
+            LOGGER.info("Adding recipient To sent -> " + enterprise.getAddress());
+
+        } else {
             InternetAddress[] listAddresses = new InternetAddress[mailProperties.getTo().length];
             for (int i = 0; i < mailProperties.getTo().length; i++) {
                 listAddresses[i] = new InternetAddress(mailProperties.getTo()[i]);
@@ -194,10 +210,6 @@ public class SendMailService {
                 mailContent.setRecipient(Message.RecipientType.TO, listAddresses[i]);
                 LOGGER.info("Adding recipient To sent -> " + mailProperties.getTo()[i]);
             }
-        } catch (AddressException ex) {
-            LOGGER.error("ERROR FROM ADDRESS EXCEPTION INDEX OF ERROR: " + ex.getMessage());
-        } catch (MessagingException ex) {
-            LOGGER.error("ERROR SENDING EMAIL INDEX OF ERROR: " + ex.getMessage());
         }
     }
 

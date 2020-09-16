@@ -41,5 +41,9 @@
 
         </createTable>
     </changeSet>
+    <changeSet id="modify_type_values" author="max3.1994@gmail.com">
+        <modifyDataType tableName="clients" columnName="amount_of_interactions" newDataType="TEXT"/>
+        <modifyDataType tableName="clients" columnName="type_of_bound_client" newDataType="TEXT"/>
+    </changeSet>
 
 </databaseChangeLog>
