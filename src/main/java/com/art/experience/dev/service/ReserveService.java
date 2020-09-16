@@ -136,7 +136,6 @@ public class ReserveService {
         List<LocalDateTime> dateTimes = getFilteredDateTimes(reservesByBarber);
 
 
-
         List<LocalDate> filteredDates = getFilteredDates(dateTimes, updateDate);
 
         LOGGER.info("GETTING HASHMAP OF DATES , HOURS PER DATE");
@@ -470,6 +469,8 @@ public class ReserveService {
              * Formato del Spliter ser separado por coma -> ' , '
              *
              * */
+            //TODO: In future add some logic to count how many of one types actions have, to manage better the string caracter lenght.
+            //      What we need is clasificate if have 100 = new reserve -> [ Vitaly Client Level ] this person is a great client, etc.
             clientExist.get().setInteractions(clientExist.get().getInteractions() + actionClient);
             clientRepository.save(clientExist.get());
         }
@@ -494,7 +495,7 @@ public class ReserveService {
         final String date = LocalDate.from(reserveDetails.getStartTime()).toString();
         final String time = LocalTime.from(reserveDetails.getStartTime()).toString();
         reserveFormat
-                .append("<li type=\"square\"> Reserva creada por: ").append(reserveDetails.getNameClient()+"</li>")
+                .append("<li type=\"square\"> Reserva creada por: ").append(reserveDetails.getNameClient() + "</li>")
                 .append("<li type=\"square\"> Tu Reserva con ").append(nameBarber).append(" fue agendada con exito!").append("</li>")
                 .append("<li type=\"square\"> Lo esperamos en Dr.César Piovene 1085, Pando, Departamento de Canelones, Uruguay.").append("</li>")
                 .append("<li type=\"square\"> Puedes seguir a ").append(nameBarber).append(" en sus redes y enterarte de nuevas tendencias!")
@@ -505,11 +506,11 @@ public class ReserveService {
                 .append("<li type=\"square\"> Fecha: ").append(date).append("</li>")
                 .append("<li type=\"square\"> Hora: ").append(time).append("</li>");
 
-        sendMailService.notifyAndSendEmail(reserveFormat.toString(), reserveDetails.getNameClient(), dateReserve.toString());
+        sendMailService.notifyAndSendEmail(reserveFormat.toString(), reserveDetails.getNameClient(), dateReserve.toString(), reserveDetails.getMailClient());
     }
 
     // Test Methods
     public void testMail() {
-        sendMailService.notifyAndSendEmail("<li type=\"square\">Esto es un Test del email</li>","Juan Miguel","<li type=\"square\">Fecha: 21-08-2020</li> <li type=\"square\">Hora: 12:00 hrs</li>");
+        sendMailService.notifyAndSendEmail("<li type=\"square\">Esto es un Test del email</li>", "Juan Miguel", "<li type=\"square\">Fecha: 21-08-2020</li> <li type=\"square\">Hora: 12:00 hrs</li>", "");
     }
 }

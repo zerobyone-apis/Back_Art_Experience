@@ -3,7 +3,7 @@ version: '3'
 
 services:
   catalogo:
-    container_name: catalogo_ap1
+    container_name: art_experience
     build: ./
     ports:
       - 8082:8082

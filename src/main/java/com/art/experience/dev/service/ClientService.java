@@ -67,7 +67,7 @@ public class ClientService extends UserAbstractFunctions {
             throw new ResourceNotFoundException("No Clients on the Database :c");
         }
         return clients.stream()
-                .map(client -> (Client) client)
+                .map(client -> client)
                 .collect(Collectors.toList());
     }
 

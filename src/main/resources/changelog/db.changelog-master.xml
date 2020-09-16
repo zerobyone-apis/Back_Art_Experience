@@ -26,6 +26,8 @@
     <include file="includes/add_foreign_key_hairdresser.xml" relativeToChangelogFile="true"/>
     <include file="includes/add_foreign_key_barber.xml" relativeToChangelogFile="true"/>
     <include file="includes/add_foreign_key_barber_shop.xml" relativeToChangelogFile="true"/>
+    <include file="includes/create_table_contact.xml" relativeToChangelogFile="true"/>
+    <include file="includes/create_contact_sequence.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
 
 

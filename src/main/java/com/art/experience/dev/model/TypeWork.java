@@ -21,7 +21,7 @@ public class TypeWork implements Serializable {
         COLOR,               //600
         COLORES_FANTASIA,    //600
         APLICACION,          //280
-        TRENZAS;              //200
+        TRENZAS              //200
     }
 
     /**********  BARBERIA   ***************/
@@ -34,7 +34,7 @@ public class TypeWork implements Serializable {
         BRUSHING_PROGRESIVO_BARBER, //desde 500
         MECHAS_BARBER,              // Desde 500
         PLANCHADO,                  //1200
-        COLORES_FANTASIA_BARBER;    //800
+        COLORES_FANTASIA_BARBER    //800
     }
 
     /****PROMOS*************************************/
@@ -42,6 +42,6 @@ public class TypeWork implements Serializable {
     CORTE_BARBA,        //350
     CORTE_BARBA_CEJAS,  //400
     CORTE_CEJAS,        //320
-    CORTE_BLACKMASK;    // 360
+    CORTE_BLACKMASK    // 360
     }
 }
