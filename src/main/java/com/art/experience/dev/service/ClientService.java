@@ -34,7 +34,7 @@ public class ClientService extends UserAbstractFunctions {
     }
 
     public Client getByEmail(final String email) {
-        Optional<Client> client = clientRepository.findByEmail(email);
+        Optional<Client> client = clientRepository.findFirstByEmail(email);
         if (!client.isPresent()) {
             LOGGER.error("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
             throw new ResourceNotFoundException("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
@@ -73,15 +73,15 @@ public class ClientService extends UserAbstractFunctions {
 
     public Client create(final Client client) {
         Client newClient = new Client();
-
-        LOGGER.error("Start Username Validation");
-        Optional<User> usernameValidation = userRepository.findByUsername(client.getUsername());
-    if (usernameValidation.isPresent()) {
-            LOGGER.error(client.getUsername() + " already exists, please try with another Username.");
-            throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
-        }
-
         try {
+            LOGGER.info("-> Username & Email Validation");
+            Optional<User> userCheck = userRepository.findByUsernameOrEmail(client.getUsername(),client.getEmail());
+
+            if (userCheck.isPresent()) {
+                LOGGER.error(client.getUsername() + " already exists, please try with another Username or Email ");
+                throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username or Email");
+            }
+
             // Client information
             newClient.setName(client.getName());
             newClient.setUsername(client.getUsername());
@@ -94,7 +94,9 @@ public class ClientService extends UserAbstractFunctions {
             newClient.setAmountReserves(Objects.isNull(client.getAmountReserves()) ? 0L : client.getAmountReserves());
             newClient.setClientType(Objects.isNull(client.getClientType()) ? "Basic client" : client.getClientType());
             newClient.setStartDate(Instant.now());
+            newClient.setSocialNumber(Objects.nonNull(client.getSocialNumber()) ? client.getSocialNumber() : null);
             newClient.setStatus(true);
+
 
             // User Information
             User user = createGenericUser(Optional.empty(), Optional.of(client), Optional.empty());

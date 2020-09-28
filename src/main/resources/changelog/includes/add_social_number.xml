@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+
+    <changeSet id="add_social_number_reserves_clients" author="max3.1994@gmail.com">
+        <addColumn tableName="reserves">
+            <column name="social_number" type="BIGINT" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+
+        <addColumn tableName="clients">
+            <column name="social_number" type="BIGINT" defaultValue="0">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

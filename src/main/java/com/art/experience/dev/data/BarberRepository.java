@@ -16,6 +16,9 @@ public interface BarberRepository extends JpaRepository<Barber, Long> {
     @Query("SELECT b FROM Barber b WHERE b.userId = :user_id")
     Optional<Barber> findByUserId(@Param("user_id") final Long userId);
 
+    @Query("SELECT b FROM Barber b WHERE b.barberId = :barber_id")
+    Optional<Barber> findById(@Param("barber_id") final Long barberId);
+
     @Query("SELECT b FROM Barber b WHERE b.email = :email")
     Optional<Barber> findByEmail(@Param("email") final String email);
 }

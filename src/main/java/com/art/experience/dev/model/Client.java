@@ -19,6 +19,7 @@ public class Client implements Serializable {
     private Long clientId;
     @Column(name= "user_id")
     private Long userId;
+
     @Column(name = "name")
     private String name;
     @Column(name = "username")
@@ -29,6 +30,8 @@ public class Client implements Serializable {
     private String email;
     @Column(name = "cel")
     private Integer cel;
+    @Column(name = "social_number")
+    private Long socialNumber;
 
     @InstantJsonFormat
     @Column(name = "start_date")
@@ -165,29 +168,38 @@ public class Client implements Serializable {
         this.clientType = clientType;
     }
 
+    public Long getSocialNumber() {
+        return socialNumber;
+    }
+
+    public void setSocialNumber(Long socialNumber) {
+        this.socialNumber = socialNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Client client = (Client) o;
-        return clientId.equals(client.clientId) &&
+        return Objects.equals(clientId, client.clientId) &&
+                Objects.equals(userId, client.userId) &&
                 name.equals(client.name) &&
-                lastDateUpdated.equals(client.lastDateUpdated) &&
                 username.equals(client.username) &&
                 password.equals(client.password) &&
                 email.equals(client.email) &&
-                cel.equals(client.cel) &&
-                amountReserves.equals(client.amountReserves) &&
-                interactions.equals(client.interactions) &&
+                Objects.equals(cel, client.cel) &&
+                socialNumber.equals(client.socialNumber) &&
                 startDate.equals(client.startDate) &&
-                endDate.equals(client.endDate) &&
-                Objects.equals(status,client.status) &&
-                clientType.equals(client.clientType);
+                Objects.equals(endDate, client.endDate) &&
+                Objects.equals(amountReserves, client.amountReserves) &&
+                Objects.equals(interactions, client.interactions) &&
+                status.equals(client.status) &&
+                Objects.equals(clientType, client.clientType) &&
+                Objects.equals(lastDateUpdated, client.lastDateUpdated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientId, name, username, password, email, cel, amountReserves, interactions, startDate, endDate, status, clientType,lastDateUpdated);
+        return Objects.hash(clientId, userId, name, username, password, email, cel, socialNumber, startDate, endDate, amountReserves, interactions, status, clientType, lastDateUpdated);
     }
-
 }
