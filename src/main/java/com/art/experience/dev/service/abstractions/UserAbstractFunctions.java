@@ -338,6 +338,7 @@ public abstract class UserAbstractFunctions {
 			userSecure.setSocialNumber(user.getSocialNumber());
 			userSecure.setBarber(user.getBarber());
 			userSecure.setStatus(user.getStatus());
+			userSecure.setAdmin(user.getAdmin());
 		}
 		return userSecure;
 	}

@@ -12,6 +12,7 @@ public class DTOUserResponse {
 	private Long socialNumber;
 	private Boolean status;
 	private Boolean isBarber;
+	private Boolean isAdmin;
 
 	public DTOUserResponse() {
 	}
@@ -54,5 +55,13 @@ public class DTOUserResponse {
 
 	public void setBarber(Boolean barber) {
 		isBarber = barber;
+	}
+
+	public Boolean getAdmin() {
+		return isAdmin;
+	}
+
+	public void setAdmin(Boolean admin) {
+		isAdmin = admin;
 	}
 }
