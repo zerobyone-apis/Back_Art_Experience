@@ -14,9 +14,9 @@ import java.util.Objects;
 @Service
 public class ContactService {
 
-    private ContactRepository repository;
-    private SendMailService mailService;
-    private UserRepository userRepository;
+    private final ContactRepository repository;
+    private final SendMailService mailService;
+    private final UserRepository userRepository;
     private String to;
 
     @Autowired

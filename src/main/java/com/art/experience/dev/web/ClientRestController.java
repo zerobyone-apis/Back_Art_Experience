@@ -2,6 +2,7 @@ package com.art.experience.dev.web;
 
 import com.art.experience.dev.Configuration.RestCrossOriginController;
 import com.art.experience.dev.model.Client;
+import com.art.experience.dev.model.DTO.DTOClientResponse;
 import com.art.experience.dev.service.ClientService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,35 +25,35 @@ public class ClientRestController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<Client> getClients() {
+    public List<DTOClientResponse> getClients() {
         LOGGER.info("Getting Clients. . . (> ° ^ °)> ");
         return clientService.getClients();
     }
 
     @GetMapping("/{id_client}")
     @ResponseStatus(HttpStatus.OK)
-    public Client getById(@PathVariable("id_client") final Long idClient) {
+    public DTOClientResponse getById(@PathVariable("id_client") final Long idClient) {
         LOGGER.info("ID Client received: \n", idClient);
         return clientService.findByID(idClient);
     }
 
     @GetMapping("/email/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public Client getClientByEmail(@PathVariable("email") final String email) {
+    public DTOClientResponse getClientByEmail(@PathVariable("email") final String email) {
       LOGGER.info("Email received: \n", email);
         return clientService.getByEmail(email);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client create(@RequestBody final Client client) {
+    public DTOClientResponse create(@RequestBody final Client client) {
         LOGGER.info("Client received: \n", "username: " + client.getUsername() + ", email: " + client.getEmail());
         return clientService.create(client);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Client update(@RequestBody final Client client) {
+    public DTOClientResponse update(@RequestBody final Client client) {
       LOGGER.info("Client received: \n", "username: " + client.getUsername() + ", email: " + client.getEmail());
         return clientService.update(client);
     }

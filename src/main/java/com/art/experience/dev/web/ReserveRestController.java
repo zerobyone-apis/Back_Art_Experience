@@ -21,7 +21,7 @@ import java.util.List;
 @RestCrossOriginController("/reserve")
 public class ReserveRestController {
 
-    private ReserveService reserveService;
+    private final ReserveService reserveService;
 
     @Autowired
     public ReserveRestController(final ReserveService reserveService) {

@@ -46,12 +46,11 @@ public class BarberService extends UserAbstractFunctions {
     public DTOBarberResponse findByID(final Long barberId) {
         try {
             Barber barber = barberRepository.findById(barberId).get();
-
-            //if (Objects.isNull(barber)) {
-             //   LOGGER.info("Barber ID Not found. " + barberId);
-            //    throw new ResourceNotFoundException("Barber ID Not found. " + barberId);
-            //}
-            return decoratorPatternBarber(Optional.of(barber));
+            if (Objects.isNull(barber)) {
+                LOGGER.info("Barber ID Not found. " + barberId);
+                throw new ResourceNotFoundException("Barber ID Not found. " + barberId);
+            }
+            return decoratorPatternBarber(barber);
         } catch (Exception ex) {
             LOGGER.info("Barber ID Not found. " + barberId);
             throw new ResourceNotFoundException("Barber ID Not found. " + barberId);
@@ -64,7 +63,7 @@ public class BarberService extends UserAbstractFunctions {
             LOGGER.error("Barber with this User ID Not found: " + userId);
             throw new ResourceNotFoundException("Barber with this User ID Not found: " + userId);
         }
-        DTOBarberResponse response = decoratorPatternBarber(Optional.of(barber.get()));
+        DTOBarberResponse response = decoratorPatternBarber(barber.get());
         LOGGER.info("Finish filter");
         return response;
     }
@@ -75,7 +74,7 @@ public class BarberService extends UserAbstractFunctions {
             LOGGER.error("Barber with this Email Not found: " + email);
             throw new ResourceNotFoundException("Barber with this Email Not found: " + email);
         }
-        return decoratorPatternBarber(Optional.of(barber.get()));
+        return decoratorPatternBarber(barber.get());
     }
 
     public List<DTOBarberResponse> getAllBarbers() {
@@ -86,7 +85,7 @@ public class BarberService extends UserAbstractFunctions {
         }
         return barbers.stream()
                 .filter(barber -> barber.getBarberId().equals(barber.getBarberId()))
-                .map(barber -> decoratorPatternBarber(Optional.of(barber)))
+                .map(barber -> decoratorPatternBarber(barber))
                 .collect(Collectors.toList());
     }
 
@@ -178,7 +177,7 @@ public class BarberService extends UserAbstractFunctions {
             shop.setUrl_banner("https://drive.google.com/file/d/1TTorWJTnRzxAXbl8otAjVr3PPbQfJFvH/view?usp=sharing");
             shop.setUrl_folder_images("https://drive.google.com/file/d/16Fax8Uqsbvqiy8Nf7ae5rIVOCKfWm86p/view?usp=sharing");
             barberShopRepository.save(shop);
-            return decoratorPatternBarber(Optional.of(newBarb));
+            return decoratorPatternBarber(newBarb);
         } catch (Exception e) {
             LOGGER.error("Error updating barbershop list ID " + e.getMessage());
             throw new CreateResourceException("Error updating barbershop list ID " + e.getMessage());
@@ -197,7 +196,10 @@ public class BarberService extends UserAbstractFunctions {
         brSHop.setDirections("Pando 7a");
         brSHop.setStartDate(Instant.now());
         brSHop.setName(Objects.isNull(barb.getLocalName()) ? "Art Experience" : barb.getLocalName());
-        brSHop.setOpenTime(Instant.ofEpochMilli(36000000));//TODO: defoult 10hrs
+
+        //TODO: defoult 10hrs
+        brSHop.setOpenTime(Instant.ofEpochMilli(36000000));
+
         brSHop.setRateOfBarberShop("New");
         return brSHop;
     }
@@ -257,7 +259,7 @@ public class BarberService extends UserAbstractFunctions {
         }
         User userUpdated = updateGenericUser(Optional.empty(), Optional.empty(), Optional.of(updateBarb), Optional.of(barber.get().getUserId()));
         updateBarb.setAdmin(userUpdated.isAdmin());
-        return decoratorPatternBarber(Optional.of(barberRepository.save(updateBarb)));
+        return decoratorPatternBarber(barberRepository.save(updateBarb));
     }
 
     public void delete(final Long barberID) {

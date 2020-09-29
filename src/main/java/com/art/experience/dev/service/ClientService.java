@@ -4,6 +4,7 @@ import com.art.experience.dev.data.ClientRepository;
 import com.art.experience.dev.data.UserRepository;
 import com.art.experience.dev.exception.CreateResourceException;
 import com.art.experience.dev.model.Client;
+import com.art.experience.dev.model.DTO.DTOClientResponse;
 import com.art.experience.dev.model.User;
 import com.art.experience.dev.service.abstractions.UserAbstractFunctions;
 import org.apache.logging.log4j.LogManager;
@@ -33,53 +34,53 @@ public class ClientService extends UserAbstractFunctions {
         this.userRepository = userRepository;
     }
 
-    public Client getByEmail(final String email) {
+    public DTOClientResponse getByEmail(final String email) {
         Optional<Client> client = clientRepository.findFirstByEmail(email);
         if (!client.isPresent()) {
             LOGGER.error("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
             throw new ResourceNotFoundException("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
         }
-        return client.get();
+        return decoratorPatternClient(client.get());
     }
 
-    public Client findByUserId(final Long userId) {
+    public DTOClientResponse findByUserId(final Long userId) {
         Optional<Client> client = clientRepository.findByUserId(userId);
         if (!client.isPresent()) {
             LOGGER.error("Client User ID: [ " + userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
             throw new ResourceNotFoundException("Client User ID: [ " + userId + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
         }
-        return client.get();
+        return decoratorPatternClient(client.get());
     }
 
-    public Client findByID(final Long clientId) {
+    public DTOClientResponse findByID(final Long clientId) {
         Optional<Client> client = clientRepository.findById(clientId);
         if (!client.isPresent()) {
             LOGGER.error("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
             throw new ResourceNotFoundException("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
         }
-        return client.get();
+        return decoratorPatternClient(client.get());
     }
 
-    public List<Client> getClients() {
+    public List<DTOClientResponse> getClients() {
         List<Client> clients = clientRepository.findAll();
         if (clients.isEmpty()) {
             LOGGER.error("Clients not found in the database");
             throw new ResourceNotFoundException("No Clients on the Database :c");
         }
         return clients.stream()
-                .map(client -> client)
+                .map(this::decoratorPatternClient)
                 .collect(Collectors.toList());
     }
 
-    public Client create(final Client client) {
+    public DTOClientResponse create(final Client client) {
         Client newClient = new Client();
         try {
-            LOGGER.info("-> Username & Email Validation");
+            LOGGER.info("Username & Email Validation");
             Optional<User> userCheck = userRepository.findByUsernameOrEmail(client.getUsername(),client.getEmail());
 
             if (userCheck.isPresent()) {
-                LOGGER.error(client.getUsername() + " already exists, please try with another Username or Email ");
-                throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username or Email");
+                LOGGER.debug("Username or Email already exists, please try to sign up or enter another Username or Email ");
+                throw new CreateResourceException("Username or Email already exists, please try to sign up or enter another Username or Email ");
             }
 
             // Client information
@@ -97,33 +98,33 @@ public class ClientService extends UserAbstractFunctions {
             newClient.setSocialNumber(Objects.nonNull(client.getSocialNumber()) ? client.getSocialNumber() : null);
             newClient.setStatus(true);
 
-
             // User Information
             User user = createGenericUser(Optional.empty(), Optional.of(client), Optional.empty());
             newClient.setUserId(user.getUserId());
+            newClient.setSocialNumber(user.getSocialNumber());
 
-            return clientRepository.save(newClient);
+            return decoratorPatternClient(clientRepository.save(newClient));
         } catch (Exception e) {
-            LOGGER.error("Error creating this client: " + e.getMessage());
+            LOGGER.debug("Error creating this client: " + e.getMessage());
             throw new CreateResourceException("Error creating this client: " + e.getMessage());
         }
     }
 
-    public Client update(final Client clie) {
+    public DTOClientResponse update(final Client clie) {
         LOGGER.info("Start ID Validation");
         Optional<Client> client = clientRepository.findById(clie.getClientId());
         if (!client.isPresent()) {
-            LOGGER.error("ID Validation Error: ");
-            LOGGER.error("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+            LOGGER.debug("ID Validation Error: ");
+            LOGGER.debug("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
             throw new ResourceNotFoundException("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
         }
         LOGGER.info("Finish ID Validation Success!");
 
         LOGGER.info("Start Username Validation");
-        Optional<User> usernameValidation = userRepository.findByUsername(clie.getUsername());
-        if (!usernameValidation.isEmpty()) {
-            LOGGER.error("Username Validation Error: ");
-            LOGGER.error(clie.getUsername() + " already exists, please try with another Username.");
+        Optional<User> username = userRepository.findByUsername(clie.getUsername());
+        if (!username.isEmpty()) {
+            LOGGER.debug("Username Validation Error: ");
+            LOGGER.debug(clie.getUsername() + " already exists, please try with another Username.");
             throw new CreateResourceException(clie.getUsername() + " already exists, please try with another Username.");
         }
         LOGGER.info("Finish Username Validation Success!");
@@ -159,9 +160,9 @@ public class ClientService extends UserAbstractFunctions {
             }
 
             updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty(), Optional.of(client.get().getUserId()));
-            return clientRepository.save(updatedClient);
+            return decoratorPatternClient(clientRepository.save(updatedClient));
         } catch (Exception ex) {
-            LOGGER.error("Error updating this client: " + ex.getMessage());
+            LOGGER.debug("Error updating this client: " + ex.getMessage());
             throw new CreateResourceException("Error updating this client: " + ex.getMessage());
         }
     }
@@ -223,7 +224,7 @@ public class ClientService extends UserAbstractFunctions {
                 throw new CreateResourceException(client.getUsername() + " already exists, please try with another Username.");
             }
 
-            *//****** User Information ********//*
+            /****** User Information *******
 
             user.setUsername(client.getUsername());
             user.setPassword(client.getPassword());

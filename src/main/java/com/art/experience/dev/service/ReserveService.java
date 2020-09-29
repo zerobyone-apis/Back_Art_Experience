@@ -81,7 +81,7 @@ public class ReserveService {
             throw new ResourceNotFoundException("Reserve ID Not found. " + clientId);
         }
         return reserves.stream()
-                .map(reserve -> reserve)
+                .filter(Reserve::getActive)
                 .collect(Collectors.toList());
     }
 
@@ -112,7 +112,6 @@ public class ReserveService {
             throw new ResourceNotFoundException("No data of Reserves in the Database.");
         }
         return reserves.stream()
-                .map(reserve -> reserve)
                 .filter(Reserve::getActive)
                 .collect(Collectors.toList());
     }
@@ -208,7 +207,7 @@ public class ReserveService {
 
     public Reserve create(final Long clientId, final Reserve reserve) {
 
-        clientValidationExists(clientId, CREATE_RESERVE_PARAM);
+        Client client = clientValidationExists(clientId, CREATE_RESERVE_PARAM);
         Reserve newReserve = new Reserve();
 
         /************ Reserve Mutable info ************/
@@ -219,6 +218,7 @@ public class ReserveService {
 
         // Description Info
         newReserve.setNameClient(reserve.getNameClient());
+        newReserve.setSocialNumber(client.getSocialNumber());
         newReserve.setMailClient(reserve.getMailClient());
         newReserve.setCelClient(reserve.getCelClient());
 
@@ -250,7 +250,7 @@ public class ReserveService {
 
     public Reserve update(final Reserve updateReserve) {
 
-        clientValidationExists(updateReserve.getClientId(), UPDATE_RESERVE_PARAM);
+       Client client = clientValidationExists(updateReserve.getClientId(), UPDATE_RESERVE_PARAM);
 
         Optional<Reserve> reserve = reservesRepository.findById(updateReserve.getReserveId());
         if (reserve.isEmpty()) {
@@ -266,6 +266,7 @@ public class ReserveService {
         // Mutable reserve Info
         toUpdateReserve.setBarberOrHairdresserId(updateReserve.getBarberOrHairdresserId());
         toUpdateReserve.setCelClient(updateReserve.getCelClient());
+        toUpdateReserve.setSocialNumber(client.getSocialNumber());
         toUpdateReserve.setMailClient(updateReserve.getMailClient());
 
         // Description Info
@@ -280,13 +281,14 @@ public class ReserveService {
         toUpdateReserve.setAdditionalCost(updateReserve.getAdditionalCost());
         toUpdateReserve.setTotalCost(sumCost(updateReserve.getPriceWork(), updateReserve.getAdditionalCost()));
 
-        // Set responsable barber
+        // Set responsible barber
         Barber barber = getBarber(reserve.get().getBarberOrHairdresserId());
         toUpdateReserve.setBarberName(barber.getName());
         toUpdateReserve.setUpdateBy(barber.getName());
         toUpdateReserve.setUpdateOn(Instant.now());
 
         //Send Notification
+        //TODO: Add Message from update reserve to differentiate of create met_od.
         SendReserveNotificationEmail(toUpdateReserve);
         return reservesRepository.save(reserve.get());
     }
@@ -395,6 +397,7 @@ public class ReserveService {
         return workRepository.save(work);
     }
 
+    //TODO: 7o.o)7
     private Hairdresser getHairdresser(final Long id) {
         return hairdresserRepository.findById(id).get();
     }
@@ -447,7 +450,7 @@ public class ReserveService {
 
     }
 
-    private void clientValidationExists(final Long clientId, final String actionClient) {
+    private Client clientValidationExists(final Long clientId, final String actionClient) {
         Optional<Client> clientExist = clientRepository.findById(clientId);
         if (clientExist.isEmpty()) {
             LOGGER.error("Client Not Found with ID. REMEMBER ID Barber or Hairdresser should be part of RequestBody");
@@ -472,7 +475,7 @@ public class ReserveService {
             //TODO: In future add some logic to count how many of one types actions have, to manage better the string caracter lenght.
             //      What we need is clasificate if have 100 = new reserve -> [ Vitaly Client Level ] this person is a great client, etc.
             clientExist.get().setInteractions(clientExist.get().getInteractions() + actionClient);
-            clientRepository.save(clientExist.get());
+            return clientRepository.save(clientExist.get());
         }
     }
 
@@ -497,10 +500,10 @@ public class ReserveService {
         reserveFormat
                 .append("<li type=\"square\"> Reserva creada por: ").append(reserveDetails.getNameClient() + "</li>")
                 .append("<li type=\"square\"> Tu Reserva con ").append(nameBarber).append(" fue agendada con exito!").append("</li>")
-                .append("<li type=\"square\"> Lo esperamos en Dr.César Piovene 1085, Pando, Departamento de Canelones, Uruguay.").append("</li>")
-                .append("<li type=\"square\"> Puedes seguir a ").append(nameBarber).append(" en sus redes y enterarte de nuevas tendencias!")
-                .append("<li type=\"square\"> Instagram").append(instagramBarber).append("</li>")
-                .append("<li type=\"square\"> Facebook: ").append(facebookBarber).append("</li>");
+                .append("<li type=\"square\"> L@ esperamos en Dr César Piovene 1027, Pando, Departamento de Canelones, Uruguay.").append("</li>")
+                .append("<li type=\"square\"> Puedes seguir a ").append(nameBarber).append(" en sus redes sociales y estar actualizado con las ultimas tendencias!")
+                .append("<li type=\"square\"> Instagram: ").append(Objects.nonNull(instagramBarber) ? instagramBarber: "https://www.instagram.com/artexperiencee/").append("</li>")
+                .append("<li type=\"square\"> Facebook: ").append(Objects.nonNull(facebookBarber) ? facebookBarber: "https://www.facebook.com/artexperiencee/").append("</li>");
 
         dateReserve
                 .append("<li type=\"square\"> Fecha: ").append(date).append("</li>")

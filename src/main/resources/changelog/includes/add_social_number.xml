@@ -17,4 +17,17 @@
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet id="removing_constraint_nullable_social_number" author="max3.1994@gmail.com">
+        <dropNotNullConstraint tableName="users" columnName="social_number" />
+    </changeSet>
+
+    <changeSet id="sequence_social_number_for_all" author="max3.1994@gmail.com">
+        <createSequence sequenceName="sequence_social_number" incrementBy="1" startValue="1" />
+        <addDefaultValue tableName="reserves" columnName="social_number" defaultValueSequenceNext="sequence_social_number" />
+        <addDefaultValue tableName="clients" columnName="social_number" defaultValueSequenceNext="sequence_social_number" />
+        <addDefaultValue tableName="users" columnName="social_number" defaultValueSequenceNext="sequence_social_number" />
+    </changeSet>
+
+
 </databaseChangeLog>

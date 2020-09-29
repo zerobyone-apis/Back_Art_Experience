@@ -13,6 +13,7 @@ public class DTOClientResponse {
 	private String username;
 	private boolean status;
 	private String email;
+	private Long socialNumber;
 
 	public DTOClientResponse() {
 	}
@@ -63,5 +64,13 @@ public class DTOClientResponse {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Long getSocialNumber() {
+		return socialNumber;
+	}
+
+	public void setSocialNumber(Long socialNumber) {
+		this.socialNumber = socialNumber;
 	}
 }

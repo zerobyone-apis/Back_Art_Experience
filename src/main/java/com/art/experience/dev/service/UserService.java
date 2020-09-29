@@ -3,6 +3,7 @@ package com.art.experience.dev.service;
 import com.art.experience.dev.data.UserRepository;
 import com.art.experience.dev.model.Barber;
 import com.art.experience.dev.model.Client;
+import com.art.experience.dev.model.DTO.DTOUserResponse;
 import com.art.experience.dev.model.DTOUserLogin;
 import com.art.experience.dev.model.User;
 import com.art.experience.dev.service.abstractions.UserAbstractFunctions;
@@ -38,12 +39,12 @@ public class UserService extends UserAbstractFunctions {
         return loginUser(user);
     }
 
-    public User createUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
-        return createGenericUser(user,client,barber);
+    public DTOUserResponse createUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
+        return decoratorPatternUser(createGenericUser(user,client,barber));
     }
 
-    public User updateUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
-       return updateGenericUser(user,client,barber,Optional.empty());
+    public DTOUserResponse updateUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
+       return decoratorPatternUser(updateGenericUser(user,client,barber,Optional.empty()));
     }
 
     public void deleteUserById(Long idUser) {

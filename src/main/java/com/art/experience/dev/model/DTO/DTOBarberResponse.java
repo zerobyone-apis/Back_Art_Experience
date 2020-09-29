@@ -17,7 +17,6 @@ public class DTOBarberResponse {
 
 	// User Attributes
 	private Long userId;
-	//private Long socialNumber;
 	private String username;
 	private String email;
 	private Boolean isBarber;

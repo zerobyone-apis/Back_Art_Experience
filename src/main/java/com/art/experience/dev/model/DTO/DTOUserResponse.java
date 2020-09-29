@@ -8,61 +8,51 @@ public class DTOUserResponse {
 
 	//private String username;
 	private String email;
+	private String username;
 	private Long socialNumber;
-	private String password;
+	private Boolean status;
+	private Boolean isBarber;
 
-	private User user;
-	private Client client;
-	private Barber barber;
-
-	DTOUserResponse() {
-	}
-
-	public Long getSocialNumber() {
-		return socialNumber;
+	public DTOUserResponse() {
 	}
 
 	public String getEmail() {
 		return email;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public Long getSocialNumber() {
+		return socialNumber;
 	}
 
 	public void setSocialNumber(Long socialNumber) {
 		this.socialNumber = socialNumber;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public Boolean getStatus() {
+		return status;
 	}
 
-	public Client getClient() {
-		return client;
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public Boolean getBarber() {
+		return isBarber;
 	}
 
-	public Barber getBarber() {
-		return barber;
-	}
-
-	public void setBarber(Barber barber) {
-		this.barber = barber;
+	public void setBarber(Boolean barber) {
+		isBarber = barber;
 	}
 }

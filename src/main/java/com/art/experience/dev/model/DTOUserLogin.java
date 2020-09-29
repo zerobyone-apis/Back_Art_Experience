@@ -2,6 +2,7 @@ package com.art.experience.dev.model;
 
 import com.art.experience.dev.model.DTO.DTOBarberResponse;
 import com.art.experience.dev.model.DTO.DTOClientResponse;
+import com.art.experience.dev.model.DTO.DTOUserResponse;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -16,7 +17,7 @@ public class DTOUserLogin {
 	private Long socialNumber;
 	private String password;
 
-	private User user;
+	private DTOUserResponse user;
 	private DTOClientResponse client;
 	private DTOBarberResponse barber;
 
@@ -35,7 +36,7 @@ public class DTOUserLogin {
 		return password;
 	}
 
-	public User getUser() {
+	public DTOUserResponse getUser() {
 		return user;
 	}
 
@@ -51,7 +52,7 @@ public class DTOUserLogin {
 		this.socialNumber = socialNumber;
 	}
 
-	public void setUser(User user) {
+	public void setUser(DTOUserResponse user) {
 		this.user = user;
 	}
 

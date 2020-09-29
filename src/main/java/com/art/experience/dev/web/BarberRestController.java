@@ -19,7 +19,7 @@ import java.util.List;
 @RestCrossOriginController("/barber")
 public class BarberRestController {
 
-    private BarberService barberService;
+    private final BarberService barberService;
 
     @Autowired
     public BarberRestController(final BarberService barberService) {
