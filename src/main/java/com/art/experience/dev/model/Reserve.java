@@ -40,6 +40,8 @@ public class Reserve implements Serializable {
     private String mailClient;
     @Column(name = "cel_client")
     private Integer celClient;
+    @Column(name= "social_number")
+    private Long socialNumber;
 
     // Time reserve day
     @Column(name = "start_time")
@@ -257,6 +259,14 @@ public class Reserve implements Serializable {
         this.barberName = barberName;
     }
 
+    public Long getSocialNumber() {
+        return socialNumber;
+    }
+
+    public void setSocialNumber(Long socialNumber) {
+        this.socialNumber = socialNumber;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -268,6 +278,7 @@ public class Reserve implements Serializable {
                 nameClient.equals(reserve.nameClient) &&
                 mailClient.equals(reserve.mailClient) &&
                 celClient.equals(reserve.celClient) &&
+                socialNumber.equals(reserve.socialNumber) &&
                 startTime.equals(reserve.startTime) &&
                 Objects.equals(endTime, reserve.endTime) &&
                 reserveDate.equals(reserve.reserveDate) &&
@@ -287,7 +298,7 @@ public class Reserve implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(reserveId, barberOrHairdresserId, clientId, nameClient, mailClient, celClient, startTime, endTime, reserveDate, workId, workToDo, priceWork, workTime, additionalCost, totalCost, createOn, createBy, updateBy, updateOn, isActive, isDone);
+        return Objects.hash(reserveId, barberOrHairdresserId,socialNumber, clientId, nameClient, mailClient, celClient, startTime, endTime, reserveDate, workId, workToDo, priceWork, workTime, additionalCost, totalCost, createOn, createBy, updateBy, updateOn, isActive, isDone);
     }
 }
 

@@ -23,6 +23,9 @@ public class User implements Serializable {
     @SequenceGenerator(name = "user_sequence", allocationSize = 1)
     @Column(name = "user_id")
     private Long userId;
+
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_social_number")
+    @SequenceGenerator(name = "sequence_social_number", allocationSize = 1)
     @Column(name = "social_number")
     private Long socialNumber;
     @Column(name = "username")
