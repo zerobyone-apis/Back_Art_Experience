@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/Art_Experience-V.1.jar -Dserver.port=$PORT
+web: java $JAVA_OPTS -jar target/*.jar --server.port=$PORT
