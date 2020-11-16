@@ -86,7 +86,7 @@ public abstract class UserAbstractFunctions {
 				LOGGER.error("Step to set Client on the result DTO User");
 				DTOClientResponse secureClient = clientService.findByUserId(userResponse.getUserId());
 
-				/** @add: Set Client data for the Response*/
+				/** @add: Set Client data for the Response */
 				if (Objects.nonNull(secureClient)) {
 					user.setClient(secureClient);
 				}
@@ -325,6 +325,7 @@ public abstract class UserAbstractFunctions {
 			clientSecure.setName(clientResult.getName());
 			clientSecure.setStatus(clientResult.getStatus());
 			clientSecure.setSocialNumber(clientResult.getSocialNumber());
+			clientSecure.setCel('0'+String.valueOf(clientResult.getCel()));
 		}
 		return clientSecure;
 	}
