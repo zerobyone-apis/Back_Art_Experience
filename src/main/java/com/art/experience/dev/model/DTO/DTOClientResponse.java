@@ -11,6 +11,7 @@ public class DTOClientResponse {
 	private Long userId;
 	private String name;
 	private String username;
+	private String cel;
 	private boolean status;
 	private String email;
 	private Long socialNumber;
@@ -72,5 +73,17 @@ public class DTOClientResponse {
 
 	public void setSocialNumber(Long socialNumber) {
 		this.socialNumber = socialNumber;
+	}
+
+	public String getCel() {
+		return cel;
+	}
+
+	public void setCel(String cel) {
+		this.cel = cel;
+	}
+
+	public boolean isStatus() {
+		return status;
 	}
 }
