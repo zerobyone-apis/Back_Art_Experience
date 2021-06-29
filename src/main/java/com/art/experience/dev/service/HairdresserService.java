@@ -43,12 +43,12 @@ public class HairdresserService {
     }
 
     public Hairdresser findByID(final Long hairdresserId) {
-        Optional<Hairdresser> hairdresser = hairdresserRepository.findById(hairdresserId);
-        if (!hairdresser.isPresent()) {
+        Hairdresser hairdresser = hairdresserRepository.findById(hairdresserId).get();
+        if (Objects.isNull(hairdresser)) {
             LOGGER.error("Hairdresser ID Not found. " + hairdresserId);
             throw new ResourceNotFoundException("Hairdresser ID Not found. " + hairdresserId);
         }
-        return hairdresser.get();
+        return hairdresser;
     }
 
     public List<Hairdresser> getAllHairdressers() {
@@ -65,15 +65,16 @@ public class HairdresserService {
     // TODO: Get all works by hairdresser ID
     public List<Work> getAllWorksForHairdresserId(final Long hairdresserId) {
         Optional<Hairdresser> hairdresser = hairdresserRepository.findById(hairdresserId);
-        if (!hairdresser.isPresent()) {
+        if (hairdresser.isPresent()) {
+            List<Work> totalWorks = workRepository.findAllByWorkId(hairdresser.get().getHairdresserId()).get();
+            return totalWorks.stream()
+                    .map(work -> work)
+                    .sorted()
+                    .collect(Collectors.toList());
+        } else {
             LOGGER.error("Hairdresser ID Not found. " + hairdresserId);
             throw new ResourceNotFoundException("Hairdresser ID Not found. " + hairdresserId);
         }
-        List<Work> totalWorks = workRepository.findAllByWorkId(hairdresser.get().getHairdresserId()).get();
-        return totalWorks.stream()
-                .map(work -> work)
-                .sorted()
-                .collect(Collectors.toList());
     }
 
     // Nueva logica aplicada, se busca un shop en caso de que no exista se crea.
@@ -168,11 +169,11 @@ public class HairdresserService {
 
     public void delete(final Long hairdresserID) {
         Optional<Hairdresser> hairdresser = hairdresserRepository.findById(hairdresserID);
-        if (!hairdresser.isPresent()) {
+        if (hairdresser.isPresent()) {
+            hairdresserRepository.delete(hairdresser.get());
+        } else {
             LOGGER.error("Hairdresser not Found by this ID" + hairdresserID);
             throw new ResourceNotFoundException("Hairdresser not Found by this ID" + hairdresserID);
-        } else {
-            hairdresserRepository.delete(hairdresser.get());
         }
     }
 

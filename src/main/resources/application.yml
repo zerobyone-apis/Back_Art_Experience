@@ -1,9 +1,11 @@
 server:
-  port: $PORT
+  port: 8080
   tomcat:
     max-threads: 300
 
 spring:
+  profiles:
+    active: @spring.profiles.active@
   application:
     name: artexperience-api
   data:
@@ -13,21 +15,9 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
-#   Local DB Connections
-#    url: jdbc:postgresql://localhost:5432/artexperiencedb
-#    username: postgres
-#    password: postgres
-#    url: jdbc:postgresql://localhost:5432/postgres
-#    username: zerobyone
-#    password: postgres
-
-#    Production DB Connections
-#    url: jdbc:postgresql://tuffi.db.elephantsql.com:5432/znflcgpt
-#    username: znflcgpt
-#    password: FdN1_UUcNthaEXwYGc93F-3sJPmkd1ov
-    url: jdbc:postgresql://ec2-107-22-33-173.compute-1.amazonaws.com/dc0qftausnmqqq
-    username: slqmhvtcjhegly
-    password: 919b9572bfe734bd3591caf59aa07c7192f69db9730fcd45c5e81cd693d20b48
+    url: ${DATABASE_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
   jpa:
     properties:
       hibernate.jdbc.time_zone: UTC

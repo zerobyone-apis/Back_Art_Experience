@@ -1,7 +1,5 @@
 package com.art.experience.dev.Configuration;
 
-import com.google.common.base.Predicates;
-import io.swagger.annotations.Api;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -35,8 +33,9 @@ public class SwaggerConfiguration {
     }
 
     //FIXME: Se debe implementar seguridad y restricciones de los endpoint del backend
-    //        Autenticarlos y protegerlos.
-    /* @Bean
+    //       Autenticarlos y protegerlos.
+    /*
+    @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()

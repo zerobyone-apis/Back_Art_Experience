@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ReservesDateTimeJson {
 
-    private static ObjectMapper objectMapper = getDefaultObjectMapper();
+    private static final ObjectMapper objectMapper = getDefaultObjectMapper();
 
     private static ObjectMapper getDefaultObjectMapper() {
         ObjectMapper defaultObjectMapper = new ObjectMapper();
@@ -27,8 +27,7 @@ public class ReservesDateTimeJson {
     }
 
     public static List<Reserve> arrayParse(String json) throws IOException {
-        List<Reserve> reserves = objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Reserve.class));
-        return reserves;
+        return objectMapper.readValue(json, objectMapper.getTypeFactory().constructCollectionType(List.class, Reserve.class));
     }
 
     public static <A> A fromJson(JsonNode node, Class<A> clazz) throws JsonProcessingException {

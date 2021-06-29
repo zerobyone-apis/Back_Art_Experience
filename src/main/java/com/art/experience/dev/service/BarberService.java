@@ -40,7 +40,6 @@ public class BarberService extends UserAbstractFunctions {
         this.barberRepository = barberRepository;
         this.userRepository = userRepository;
         this.barberShopRepository = barberShopRepository;
-
     }
 
     public DTOBarberResponse findByID(final Long barberId) {
@@ -58,23 +57,23 @@ public class BarberService extends UserAbstractFunctions {
     }
 
     public DTOBarberResponse findByUserId(final Long userId) {
-        Optional<Barber> barber = barberRepository.findByUserId(userId);
-        if (!barber.isPresent()) {
+        Barber barber = barberRepository.findByUserId(userId).get();
+        if (Objects.isNull(barber)) {
             LOGGER.error("Barber with this User ID Not found: " + userId);
             throw new ResourceNotFoundException("Barber with this User ID Not found: " + userId);
         }
-        DTOBarberResponse response = decoratorPatternBarber(barber.get());
+        DTOBarberResponse response = decoratorPatternBarber(barber);
         LOGGER.info("Finish filter");
         return response;
     }
 
     public DTOBarberResponse findByEmail(final String email) {
         Optional<Barber> barber = barberRepository.findByEmail(email);
-        if (!barber.isPresent()) {
-            LOGGER.error("Barber with this Email Not found: " + email);
-            throw new ResourceNotFoundException("Barber with this Email Not found: " + email);
+        if (barber.isPresent()) {
+            return decoratorPatternBarber(barber.get());
         }
-        return decoratorPatternBarber(barber.get());
+        LOGGER.error("Barber with this Email Not found: " + email);
+        throw new ResourceNotFoundException("Barber with this Email Not found: " + email);
     }
 
     public List<DTOBarberResponse> getAllBarbers() {
@@ -85,7 +84,7 @@ public class BarberService extends UserAbstractFunctions {
         }
         return barbers.stream()
                 .filter(barber -> barber.getBarberId().equals(barber.getBarberId()))
-                .map(barber -> decoratorPatternBarber(barber))
+                .map(this::decoratorPatternBarber)
                 .collect(Collectors.toList());
     }
 
@@ -113,7 +112,7 @@ public class BarberService extends UserAbstractFunctions {
             } else {
                 List<BarberShop> barberShops = barberShopRepository.findByName(barb.getName()).get();
                 shop = barberShops.stream()
-                        .filter(shopName -> shopName.getName() == barb.getLocalName())
+                        .filter(shopName -> shopName.getName().equals(barb.getLocalName()))
                         .findFirst()
                         .get();
 
@@ -206,82 +205,81 @@ public class BarberService extends UserAbstractFunctions {
 
     public DTOBarberResponse update(final Barber barb) {
         Optional<Barber> barber = barberRepository.findById(barb.getBarberId());
-        if (!barber.isPresent()) {
+        if (barber.isPresent()) {
+
+            /******************* Barber information ****************/
+
+            // My new Barber Update Obj
+            Barber updateBarb = barber.get();
+
+            /* Immutable User info
+             *
+             * updateBarb.setBarberId(updateBarb.getBarberId());
+             * updateBarb.setUserId(updateBarb.getUserId());
+             * updateBarb.setStartDate(updateBarb.getStartDate());
+             */
+
+            // Mutable User info
+            updateBarb.setUsername(Objects.nonNull(barb.getUsername()) ? barb.getUsername() : updateBarb.getUsername());
+            updateBarb.setPassword(Objects.nonNull(barb.getPassword()) ? barb.getPassword() : updateBarb.getPassword());
+            updateBarb.setName(Objects.nonNull(barb.getName()) ? barb.getName() : updateBarb.getName());
+            updateBarb.setCel(Objects.nonNull(barb.getCel()) ? barb.getCel() : updateBarb.getCel());
+            updateBarb.setEmail(Objects.nonNull(barb.getEmail()) ? barb.getEmail() : updateBarb.getEmail());
+
+            // Mutable barber info
+            updateBarb.setWorkTime(Objects.nonNull(barb.getWorkTime()) ? barb.getWorkTime() : updateBarb.getWorkTime());
+            updateBarb.setCutsTimes(Objects.nonNull(barb.getCutsTimes()) ? barb.getCutsTimes() : updateBarb.getCutsTimes());
+            updateBarb.setLocalId(Objects.isNull(barb.getLocalId()) ? 1 : barb.getLocalId());
+            updateBarb.setLocalName(Objects.isNull(barb.getLocalName()) ? "Art Experience" : barb.getLocalName());
+
+            // Mutable Analytics info
+            updateBarb.setAmountOfCuts(Objects.nonNull(barb.getAmountOfCuts()) ? barb.getAmountOfCuts() : updateBarb.getAmountOfCuts());
+            updateBarb.setAmountOfClients(Objects.nonNull(barb.getAmountOfClients()) ? barb.getAmountOfClients() : updateBarb.getAmountOfClients());
+            updateBarb.setAmountDailyReserves(Objects.nonNull(barb.getAmountDailyReserves()) ? barb.getAmountDailyReserves() : updateBarb.getAmountDailyReserves());
+            updateBarb.setAmountOfShares(Objects.nonNull(barb.getAmountOfShares()) ? barb.getAmountOfShares() : updateBarb.getAmountOfShares());
+            updateBarb.setAmountOfComments(Objects.nonNull(barb.getAmountOfComments()) ? barb.getAmountOfComments() : updateBarb.getAmountOfComments());
+            updateBarb.setAmountOflikesOnComments(Objects.nonNull(barb.getAmountOflikesOnComments()) ? barb.getAmountOflikesOnComments() : updateBarb.getAmountOflikesOnComments());
+            updateBarb.setPrestige(Objects.nonNull(barb.getPrestige()) ? barb.getPrestige() : updateBarb.getPrestige());
+
+
+            // Social Media Information
+            updateBarb.setBarberDescription(Objects.isNull(barb.getBarberDescription()) ? "" : barb.getBarberDescription());
+            updateBarb.setUrlProfileImage(Objects.isNull(barb.getUrlProfileImage()) ? "" : barb.getUrlProfileImage());
+            updateBarb.setFacebook(Objects.isNull(barb.getFacebook()) ? "" : barb.getFacebook());
+            updateBarb.setInstagram(Objects.isNull(barb.getInstagram()) ? "" : barb.getInstagram());
+
+
+            if (Objects.nonNull(barb.getEndDate())) {
+                updateBarb.setEndDate(Instant.now());
+                updateBarb.setActive(false);
+            }
+            User userUpdated = updateGenericUser(Optional.empty(), Optional.empty(), Optional.of(updateBarb), Optional.of(barber.get().getUserId()));
+            updateBarb.setAdmin(userUpdated.isAdmin());
+            return decoratorPatternBarber(barberRepository.save(updateBarb));
+        } else {
             LOGGER.error("Barber not found with the ID " + barb.getBarberId());
             throw new ResourceNotFoundException("Barber not found with the ID " + barb.getBarberId());
         }
 
-        /******************* Barber information ****************/
-
-        // My new Barber Update Obj
-        Barber updateBarb = barber.get();
-
-        /* Immutable User info
-         *
-         * updateBarb.setBarberId(updateBarb.getBarberId());
-         * updateBarb.setUserId(updateBarb.getUserId());
-         * updateBarb.setStartDate(updateBarb.getStartDate());
-         */
-
-        // Mutable User info
-        updateBarb.setUsername(Objects.nonNull(barb.getUsername()) ? barb.getUsername() : updateBarb.getUsername());
-        updateBarb.setPassword(Objects.nonNull(barb.getPassword()) ? barb.getPassword() : updateBarb.getPassword());
-        updateBarb.setName(Objects.nonNull(barb.getName()) ? barb.getName() : updateBarb.getName());
-        updateBarb.setCel(Objects.nonNull(barb.getCel()) ? barb.getCel() : updateBarb.getCel());
-        updateBarb.setEmail(Objects.nonNull(barb.getEmail()) ? barb.getEmail() : updateBarb.getEmail());
-
-        // Mutable barber info
-        updateBarb.setWorkTime(Objects.nonNull(barb.getWorkTime()) ? barb.getWorkTime() : updateBarb.getWorkTime());
-        updateBarb.setCutsTimes(Objects.nonNull(barb.getCutsTimes()) ? barb.getCutsTimes() : updateBarb.getCutsTimes());
-        updateBarb.setLocalId(Objects.isNull(barb.getLocalId()) ? 1 : barb.getLocalId());
-        updateBarb.setLocalName(Objects.isNull(barb.getLocalName()) ? "Art Experience" : barb.getLocalName());
-
-        // Mutable Analytics info
-        updateBarb.setAmountOfCuts(Objects.nonNull(barb.getAmountOfCuts()) ? barb.getAmountOfCuts() : updateBarb.getAmountOfCuts());
-        updateBarb.setAmountOfClients(Objects.nonNull(barb.getAmountOfClients()) ? barb.getAmountOfClients() : updateBarb.getAmountOfClients());
-        updateBarb.setAmountDailyReserves(Objects.nonNull(barb.getAmountDailyReserves()) ? barb.getAmountDailyReserves() : updateBarb.getAmountDailyReserves());
-        updateBarb.setAmountOfShares(Objects.nonNull(barb.getAmountOfShares()) ? barb.getAmountOfShares() : updateBarb.getAmountOfShares());
-        updateBarb.setAmountOfComments(Objects.nonNull(barb.getAmountOfComments()) ? barb.getAmountOfComments() : updateBarb.getAmountOfComments());
-        updateBarb.setAmountOflikesOnComments(Objects.nonNull(barb.getAmountOflikesOnComments()) ? barb.getAmountOflikesOnComments() : updateBarb.getAmountOflikesOnComments());
-        updateBarb.setPrestige(Objects.nonNull(barb.getPrestige()) ? barb.getPrestige() : updateBarb.getPrestige());
-
-
-        // Social Media Information
-        updateBarb.setBarberDescription(Objects.isNull(barb.getBarberDescription()) ? "" : barb.getBarberDescription());
-        updateBarb.setUrlProfileImage(Objects.isNull(barb.getUrlProfileImage()) ? "" : barb.getUrlProfileImage());
-        updateBarb.setFacebook(Objects.isNull(barb.getFacebook()) ? "" : barb.getFacebook());
-        updateBarb.setInstagram(Objects.isNull(barb.getInstagram()) ? "" : barb.getInstagram());
-
-
-        if (Objects.nonNull(barb.getEndDate())) {
-            updateBarb.setEndDate(Instant.now());
-            updateBarb.setActive(false);
-        }
-        User userUpdated = updateGenericUser(Optional.empty(), Optional.empty(), Optional.of(updateBarb), Optional.of(barber.get().getUserId()));
-        updateBarb.setAdmin(userUpdated.isAdmin());
-        return decoratorPatternBarber(barberRepository.save(updateBarb));
     }
 
     public void delete(final Long barberID) {
         Optional<Barber> barber = barberRepository.findById(barberID);
-        if (!barber.isPresent()) {
-            LOGGER.error("Barber not Found by this ID" + barberID);
-            throw new ResourceNotFoundException("Barber not Found by this ID" + barberID);
-        } else {
+        if (barber.isPresent()) {
             Optional<User> user = userRepository.findById(barber.get().getUserId());
             // Se borra el usuario tambien.
             userRepository.delete(user.get());
             // Se dejara un boton para los admins que podran eliminar clientes.
             barberRepository.delete(barber.get());
+        } else {
+            LOGGER.error("Barber not Found by this ID" + barberID);
+            throw new ResourceNotFoundException("Barber not Found by this ID" + barberID);
         }
     }
 
     public void deactivate(final Long barberID) {
         Optional<Barber> barber = barberRepository.findById(barberID);
-        if (!barber.isPresent()) {
-            LOGGER.error("Barber not Found by this ID" + barberID);
-            throw new ResourceNotFoundException("Barber not Found by this ID" + barberID);
-        } else {
+        if (barber.isPresent()) {
             User user = userRepository.findById(barber.get().getUserId()).get();
             user.setStatus(false);
             //Se borra el user para que quede Libre el mail y el username
@@ -289,56 +287,10 @@ public class BarberService extends UserAbstractFunctions {
             //Se desactiva el barber
             barber.get().setActive(false);
             barberRepository.save(barber.get());
+        } else {
+            LOGGER.error("Barber not Found by this ID" + barberID);
+            throw new ResourceNotFoundException("Barber not Found by this ID" + barberID);
         }
     }
-
-    /*private User createUser(final Barber barb) {
-        User user = new User();
-        try {
-            Optional<User> checkUser = userRepository.findByUsername(barb.getUsername());
-            if(!checkUser.isEmpty()){
-                LOGGER.error(barb.getUsername() + " already exists, please try with another Username.");
-                throw new CreateResourceException(barb.getUsername() + " already exists, please try with another Username.");
-            }
-            /****** User Information ********/
-
-         /*   user.setUsername(barb.getUsername());
-            user.setPassword(barb.getPassword());
-            user.setCreateOn(Instant.now());
-            user.setStatus(true);
-            user.setAdmin((Objects.isNull(barb.getAdmin())) ? false : barb.getAdmin());
-
-            return userRepository.save(user);
-
-        } catch (Exception e) {
-            LOGGER.error("Error creating the user. " + e.getMessage());
-            throw new CreateResourceException("Error creating the user. " + e.getMessage());
-        }
-    }
-
-
-     private User updateUser(final Barber updateBarb) {
-        Optional<User> userOpt = userRepository.findById(updateBarb.getUserId());
-        if (!userOpt.isPresent()) {
-            LOGGER.error("User not Found");
-            throw new ResourceNotFoundException("User not Found with this ID " + updateBarb.getUserId());
-        }
-        /****** User Information ********/
-    // Update user Obj
-     /*   User user = userOpt.get();
-
-        // Mutable User Info
-        user.setUsername(updateBarb.getUsername());
-        user.setPassword(updateBarb.getPassword());
-        user.setCreateOn(updateBarb.getStartDate());
-        user.setAdmin(Objects.isNull(updateBarb.getAdmin()) ? false : updateBarb.getAdmin());
-
-        if (Objects.nonNull(updateBarb.getEndDate())) {
-            user.setDeleteOn(Instant.now());
-            user.setStatus(false);
-        }
-        return userRepository.save(user);
-    }*/
-
 
 }

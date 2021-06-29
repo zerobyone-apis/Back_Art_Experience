@@ -115,7 +115,7 @@ public abstract class UserAbstractFunctions {
 		return user;
 	}
 
-	public User createGenericUser(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
+	public User createGenericUser(Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
 		try {
 			User newUser = createOrUpdateUserFromClientOrBarberData(user, client, barber);
 
@@ -146,34 +146,34 @@ public abstract class UserAbstractFunctions {
 		try {
 			LOGGER.info("Start User Exists Validation");
 			Optional<User> checkUser = userRepository.findById(userId.get());
-			if (checkUser.isEmpty()) {
-				LOGGER.info("User ID Not found with the next ID: " + userId.get());
-				throw new CreateResourceException("User ID Not found with the next ID: " + userId.get());
-			} else {
+			if (checkUser.isPresent()) {
 				newUser = createOrUpdateUserFromClientOrBarberData(user, client, barber);
 				newUser.setCreateOn(checkUser.get().getCreateOn());
 				newUser.setEmail(Objects.isNull(newUser.getEmail()) ? checkUser.get().getEmail() : newUser.getEmail());
+			} else {
+				LOGGER.info("User ID Not found with the next ID: " + userId.get());
+				throw new CreateResourceException("User ID Not found with the next ID: " + userId.get());
 			}
 
 			LOGGER.info("Start Username Validation");
 			Optional<User> username = userRepository.findByUsername(newUser.getUsername());
-			if (!username.isEmpty()) {
-				if (!username.get().getUserId().equals(newUser.getUserId())) {
-					LOGGER.error(newUser.getUsername() + " already exists, please try with another Username.");
-					throw new CreateResourceException(newUser.getUsername() + " already exists, please try with another Username.");
-				} else {
-					LOGGER.info("The Username is available!");
-				}
-			} else {
+			if (username.isPresent()) {
 				LOGGER.info("Start Email Validation");
 				Optional<User> email = userRepository.findByEmail(newUser.getUsername());
-				if (!email.isEmpty()) {
+				if (email.isPresent()) {
 					if (!email.get().getUserId().equals(newUser.getUserId())) {
 						LOGGER.error(newUser.getUsername() + " already exists, please try with another Email.");
 						throw new CreateResourceException(newUser.getUsername() + " already exists, please try with another Email.");
 					} else {
 						LOGGER.info("The Email is available!");
 					}
+				}
+			} else {
+				if (!username.get().getUserId().equals(newUser.getUserId())) {
+					LOGGER.error(newUser.getUsername() + " already exists, please try with another Username.");
+					throw new CreateResourceException(newUser.getUsername() + " already exists, please try with another Username.");
+				} else {
+					LOGGER.info("The Username is available!");
 				}
 			}
 
@@ -188,7 +188,7 @@ public abstract class UserAbstractFunctions {
 	private User createOrUpdateUserFromClientOrBarberData(final Optional<User> user, final Optional<Client> client, final Optional<Barber> barber) {
 		LOGGER.info("Start User Validation!");
 		User newUser = new User();
-		if (!user.isEmpty()) {
+		if (user.isPresent()) {
 			LOGGER.info("User Is Not present! Creating user info . . .");
 
 			newUser.setUserId(Objects.nonNull(user.get().getUserId()) ? user.get().getUserId() : null);
@@ -218,7 +218,7 @@ public abstract class UserAbstractFunctions {
 			}
 
 			LOGGER.info("User created Directly!");
-		} else if (!client.isEmpty()) {
+		} else if (client.isPresent()) {
 			LOGGER.info("Client User Is Not present! Creating Client User info . . .");
 
 			newUser.setUserId(Objects.nonNull(client.get().getUserId()) ? client.get().getUserId() : null);
@@ -262,7 +262,7 @@ public abstract class UserAbstractFunctions {
 				newUser.setStatus(true);
 			}
 			LOGGER.info("Client User Created!");
-		} else if (!barber.isEmpty()) {
+		} else if (barber.isPresent()) {
 			LOGGER.info("Barber User Is Not present! Creating Barber User info . . .");
 			newUser.setUserId(Objects.nonNull(barber.get().getUserId()) ? barber.get().getUserId() : null);
 			newUser.setEmail(barber.get().getEmail());

@@ -16,7 +16,7 @@ import java.util.List;
 public class ClientRestController {
 
     private static final Logger LOGGER = LogManager.getLogger(ClientRestController.class);
-    private ClientService clientService;
+    private final ClientService clientService;
 
     @Autowired
     public ClientRestController(final ClientService clientService) {

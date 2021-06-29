@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Barber implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "barber_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "barber_sequence")
     @SequenceGenerator(name = "barber_sequence", allocationSize = 1)
     
     //User Information

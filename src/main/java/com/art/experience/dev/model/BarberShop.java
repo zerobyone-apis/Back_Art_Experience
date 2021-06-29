@@ -16,7 +16,8 @@ public class BarberShop implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "barber_shop_sequence")
     @SequenceGenerator(name = "barber_shop_sequence", allocationSize = 1)
-   // Shop Information
+
+    // Shop Information
     @Column(name = "local_id")
     private Long shopId;
     @Column(name = "name")

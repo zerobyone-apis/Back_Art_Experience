@@ -12,7 +12,7 @@ import java.util.List;
 @RestCrossOriginController("/hairdresser")
 public class HairdresserRestController {
 
-    private HairdresserService hairdresserService;
+    private final HairdresserService hairdresserService;
 
     @Autowired
     public HairdresserRestController(final HairdresserService hairdresserService) {

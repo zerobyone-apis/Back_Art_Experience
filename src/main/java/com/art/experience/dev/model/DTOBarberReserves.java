@@ -14,8 +14,7 @@ public class DTOBarberReserves {
     }
 
     public LocalDate getFindReserveByThisDate() {
-        LocalDate formatted = convertDate(findReserveByThisDate);
-        return formatted;
+        return convertDate(findReserveByThisDate);
     }
 
     public Long getBarberId() {

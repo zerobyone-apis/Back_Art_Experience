@@ -36,11 +36,11 @@ public class ClientService extends UserAbstractFunctions {
 
     public DTOClientResponse getByEmail(final String email) {
         Optional<Client> client = clientRepository.findFirstByEmail(email);
-        if (!client.isPresent()) {
-            LOGGER.error("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
-            throw new ResourceNotFoundException("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+        if (client.isPresent()) {
+            return decoratorPatternClient(client.get());
         }
-        return decoratorPatternClient(client.get());
+        LOGGER.error("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
+        throw new ResourceNotFoundException("Client Email: [ " + email + " ] Not found.\n Please try to create new Client Account to create new Reserve. :) ");
     }
 
     public DTOClientResponse findByUserId(final Long userId) {
@@ -54,11 +54,11 @@ public class ClientService extends UserAbstractFunctions {
 
     public DTOClientResponse findByID(final Long clientId) {
         Optional<Client> client = clientRepository.findById(clientId);
-        if (!client.isPresent()) {
-            LOGGER.error("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
-            throw new ResourceNotFoundException("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+        if (client.isPresent()) {
+            return decoratorPatternClient(client.get());
         }
-        return decoratorPatternClient(client.get());
+        LOGGER.error("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
+        throw new ResourceNotFoundException("Client ID: [ " + clientId + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
     }
 
     public List<DTOClientResponse> getClients() {
@@ -108,12 +108,12 @@ public class ClientService extends UserAbstractFunctions {
             LOGGER.debug("Error creating this client: " + e.getMessage());
             throw new CreateResourceException("Error creating this client: " + e.getMessage());
         }
-    }
+    } //todo migrated
 
     public DTOClientResponse update(final Client clie) {
         LOGGER.info("Start ID Validation");
-        Optional<Client> client = clientRepository.findById(clie.getClientId());
-        if (!client.isPresent()) {
+        Client client = clientRepository.findById(clie.getClientId()).get();
+        if (Objects.isNull(client)) {
             LOGGER.debug("ID Validation Error: ");
             LOGGER.debug("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
             throw new ResourceNotFoundException("Client ID: [ " + clie.getClientId() + " ] Not found. \n Please try to create new Client Account to create new Reserve. :)");
@@ -122,57 +122,52 @@ public class ClientService extends UserAbstractFunctions {
 
         LOGGER.info("Start Username Validation");
         Optional<User> username = userRepository.findByUsername(clie.getUsername());
-        if (!username.isEmpty()) {
+        if (username.isPresent()) {
             LOGGER.debug("Username Validation Error: ");
             LOGGER.debug(clie.getUsername() + " already exists, please try with another Username.");
             throw new CreateResourceException(clie.getUsername() + " already exists, please try with another Username.");
-        }
-        LOGGER.info("Finish Username Validation Success!");
+        } else {
+            LOGGER.info("Finish Username Validation Success!");
 
-        // My new Client Update object
-        Client updatedClient = client.get();
+            /* Immutable client Info
+             *
+             * updatedClient.setUserId(client.get().getUserId());
+             * updatedClient.setClientId(client.get().getClientId());
+             * updatedClient.setStartDate(client.get().getStartDate());
+             *
+             */
+            try {
+                // Client Information
+                client.setUsername(clie.getUsername());
+                client.setPassword(clie.getPassword());
+                client.setName(clie.getName());
+                client.setEmail(clie.getEmail());
+                client.setCel(clie.getCel());
 
-        /* Immutable client Info
-         *
-         * updatedClient.setUserId(client.get().getUserId());
-         * updatedClient.setClientId(client.get().getClientId());
-         * updatedClient.setStartDate(client.get().getStartDate());
-         *
-         */
-        try {
-            // Client Information
-            updatedClient.setUsername(clie.getUsername());
-            updatedClient.setPassword(clie.getPassword());
-            updatedClient.setName(clie.getName());
-            updatedClient.setEmail(clie.getEmail());
-            updatedClient.setCel(clie.getCel());
+                // Analytics Info
+                client.setInteractions(Objects.isNull(clie.getInteractions()) ? client.getInteractions() : clie.getInteractions());
+                client.setAmountReserves(Objects.isNull(clie.getAmountReserves()) ? client.getAmountReserves() : clie.getAmountReserves());
+                client.setClientType(Objects.isNull(clie.getClientType()) ? client.getClientType() : clie.getClientType());
+                client.setLastDateUpdated(Instant.now());
+                client.setStatus(true);
 
-            // Analytics Info
-            updatedClient.setInteractions(Objects.isNull(clie.getInteractions()) ? updatedClient.getInteractions() : clie.getInteractions());
-            updatedClient.setAmountReserves(Objects.isNull(clie.getAmountReserves()) ? updatedClient.getAmountReserves() : clie.getAmountReserves());
-            updatedClient.setClientType(Objects.isNull(clie.getClientType()) ? updatedClient.getClientType() : clie.getClientType());
-            updatedClient.setLastDateUpdated(Instant.now());
-            updatedClient.setStatus(true);
+                if (Objects.nonNull(clie.getEndDate())) {
+                    client.setEndDate(Instant.now());
+                    client.setStatus(false);
+                }
 
-            if (Objects.nonNull(clie.getEndDate())) {
-                updatedClient.setEndDate(Instant.now());
-                updatedClient.setStatus(false);
+                updateGenericUser(Optional.empty(), Optional.of(client), Optional.empty(), Optional.of(client.getUserId()));
+                return decoratorPatternClient(clientRepository.save(client));
+            } catch (Exception ex) {
+                LOGGER.debug("Error updating this client: " + ex.getMessage());
+                throw new CreateResourceException("Error updating this client: " + ex.getMessage());
             }
-
-            updateGenericUser(Optional.empty(), Optional.of(updatedClient), Optional.empty(), Optional.of(client.get().getUserId()));
-            return decoratorPatternClient(clientRepository.save(updatedClient));
-        } catch (Exception ex) {
-            LOGGER.debug("Error updating this client: " + ex.getMessage());
-            throw new CreateResourceException("Error updating this client: " + ex.getMessage());
         }
     }
 
     public void logicDelete(final Long clientID) {
         Optional<Client> client = clientRepository.findById(clientID);
-        if (!client.isPresent()) {
-            LOGGER.error("Client not Found by this ID" + clientID);
-            throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
-        } else {
+        if (client.isPresent()) {
             // Borrado logico
             try {
                 client.get().setStatus(false);
@@ -182,21 +177,23 @@ public class ClientService extends UserAbstractFunctions {
                 throw new ResourceNotFoundException("Something went wrong deleting Client with this ID " + clientID + ", Error message: " + e.getMessage());
             }
 
+        } else {
+            LOGGER.error("Client not Found by this ID" + clientID);
+            throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
         }
     }
 
     public void delete(final Long clientID) {
         Optional<Client> client = clientRepository.findById(clientID);
-
-        if (!client.isPresent()) {
-            LOGGER.error("Client not Found by this ID" + clientID);
-            throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
-        } else {
+        if (client.isPresent()) {
             Optional<User> user = userRepository.findById(client.get().getUserId());
             // Se borra el usuario tambien.
             userRepository.delete(user.get());
             // Se dejara un boton para los admins que podran eliminar clientes.
             clientRepository.delete(client.get());
+        } else {
+            LOGGER.error("Client not Found by this ID" + clientID);
+            throw new ResourceNotFoundException("Client not Found by this ID" + clientID);
         }
     }
 

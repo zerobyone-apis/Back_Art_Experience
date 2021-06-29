@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class ContactRestController {
 
     private static final Logger LOGGER = LogManager.getLogger(ContactRestController.class);
-    private ContactService contactService;
+    private final ContactService contactService;
 
     @Autowired
     public ContactRestController(final ContactService contactService) {
