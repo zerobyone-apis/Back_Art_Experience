@@ -230,7 +230,7 @@ public class ReserveService {
         Work work = createWorkByReserve(reserve.getBarberOrHairdresserId(), reserve);
         newReserve.setWorkId(work.getWorkId());
         newReserve.setWorkToDo(reserve.getWorkToDo());
-        newReserve.setWorkTime(Instant.ofEpochMilli(DURATION_WORK));
+        newReserve.setWorkTime(Instant.ofEpochMilli(DURATION_WORK)); //modify this instant to string or something better
         newReserve.setPriceWork(reserve.getPriceWork());
         newReserve.setAdditionalCost(reserve.getAdditionalCost());
         newReserve.setTotalCost(sumCost(work.getPriceWork(), reserve.getAdditionalCost()));
@@ -421,7 +421,7 @@ public class ReserveService {
         DateTimeFormatter formatDateTime;
         DateTimeFormatter formatDate;
 
-        formatDateTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        formatDateTime = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss")
                 .withZone(ZoneId.systemDefault());
         String startTimeStr = formatDateTime.format(oldReserve.getStartTime());
         LocalDateTime dateUpdated = LocalDateTime.parse(startTimeStr, formatDateTime);
@@ -429,7 +429,7 @@ public class ReserveService {
         //TODO: SET START TIME
         newReserve.setStartTime(dateUpdated);
 
-        formatDateTime = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+        formatDateTime = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss") // UTC-08:00
                 .withZone(ZoneId.systemDefault());
         String endTimeStr = formatDateTime.format(oldReserve.getStartTime());
         // Add 30 Minutos for the work of this job.
@@ -438,7 +438,7 @@ public class ReserveService {
         //TODO: SET END TIME
         newReserve.setEndTime(endTime);
 
-        formatDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
+        formatDate = DateTimeFormatter.ofPattern("dd-MM-yyyy")
                 .withZone(ZoneId.systemDefault());
         LocalDate reserveDate = LocalDateTime.from(oldReserve.getStartTime()).toLocalDate();
         String dateString = formatDate.format(reserveDate);
