@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 5000
   tomcat:
     max-threads: 300
 
@@ -15,9 +15,19 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL}
-    username: ${USERNAME}
-    password: ${PASSWORD}
+    #DigitalOcean Prod db
+    url: jdbc:postgresql://do-db-art-experience-v3-do-user-10148946-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require
+    username: doadmin
+    password: jozULJfyn5q8Pu7J
+
+    # Heroku Dev db (old prod data)
+    #url: jdbc:postgresql://ec2-107-22-33-173.compute-1.amazonaws.com:5432/dc0qftausnmqqq
+    #username: slqmhvtcjhegly
+    #password: 919b9572bfe734bd3591caf59aa07c7192f69db9730fcd45c5e81cd693d20b48
+
+    #url: ${DATABASE_URL}
+    #username: ${USERNAME}
+    #password: ${PASSWORD}
   jpa:
     properties:
       hibernate.jdbc.time_zone: UTC

@@ -1,16 +1,39 @@
 FROM openjdk:11
+# PORT server
+EXPOSE 5000
 
-ENV SLEEP 1
+ENV profiles=local
+ARG JAR_FILE=target/Art_Experience-V.1.jar
+ADD ${JAR_FILE} /Art_Experience-V.1.jar
 
-ADD *.jar /Art_Experience-V.1.jar
+CMD java -Djava.security.egd=file:/dev/./urandom -jar Art_Experience-V.1.jar
 
-EXPOSE 8083
+# OLD pero sirve para pruebas.
+
+## java
+#ENV JAVA_VERSION=11
+## Maven
+#ENV MAVEN_VERSION=latest
+#ENV SLEEP 1
+
+##Set java_Home
+
+#ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+#ENV PATH=$PATH:$JAVA_HOME/bin
+##Set maven_Home
+#ENV MAVEN_HOME=/usr/share/maven
+#ENV PATH=${MAVEN_HOME}/bin:$PATH
+
+##Clean de lo que no se usa mas
+#RUN unset JAVA_VERSION
+#RUN unset MAVEN_VERSION
+
+# Console checkpoints..
+#RUN which java
+
+#RUN echo $JAVA_HOME
+#RUN echo $MAVEN_HOME
 #RUN sh -c 'touch /Art_Experience-V.1.jar'
-
-CMD sleep ${SLEEP} && \
-    java -Xmx2048m -Djava.security.egd=file:/dev/./urandom -jar /Art_Experience-0.1.jar
-
-
 #EXPOSE 8082
 #COPY . /
 #ENTRYPOINT ["mvn", "clean", "spring-boot:run"]
