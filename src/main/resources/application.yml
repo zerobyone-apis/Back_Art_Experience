@@ -1,5 +1,5 @@
 server:
-  port: 5000
+  port: 8080
   tomcat:
     max-threads: 300
 
@@ -16,9 +16,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     #DigitalOcean Prod db
-    url: jdbc:postgresql://do-db-art-experience-v3-do-user-10148946-0.b.db.ondigitalocean.com:25060/defaultdb?sslmode=require
-    username: doadmin
-    password: jozULJfyn5q8Pu7J
+    url: jdbc:postgresql://ec2-54-163-158-194.compute-1.amazonaws.com:5432/da8qjfb8v2knur
+    username: nkhwxfqlvzebxa
+    password: dfa858815bc673b87b9eaaf3b7b659c9310e1892a8e395b3075b0bc66dafe061
 
     # Heroku Dev db (old prod data)
     #url: jdbc:postgresql://ec2-107-22-33-173.compute-1.amazonaws.com:5432/dc0qftausnmqqq
