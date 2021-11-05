@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  tomcat:
+    max-threads: 300
+
+spring:
+  profiles:
+    active: local
+  application:
+    name: artexperience-api
+  data:
+    rest:
+      default-page-size: 40
+      max-page-size: 1000
+      default-media-type: application/json
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${USERNAME}
+    password: ${PASSWORD}
+  jpa:
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  liquibase:
+    change-log: classpath:changelog/db.changelog-master.xml
+
+logging:
+  level:
+    org.hibernate.engine.jdbc.env.internal.LobCreatorBuilderImpl: ERROR
+
+reports-reserves:
+  scheduler:
+    enabled: true
+    cron: 0 3 * * * *
+
+mail:
+  username: art.experience.uy.2020@gmail.com
+  password: art_experience_2020
+  to: damianezetiel1@gmail.com, mitsuki-kun@hotmail.com,art.experience.uy.2020@gmail.com #peraltana.21@gmail.com,max3.1994@gmail.com,smtp.test.zero@gmail.com,
+  host: smtp.gmail.com #host
+  port: 587
+  auth: true
+  enable: true
+  required: true
+  contact:
+    recipient:
+      to: art.experience.uy.2020@gmail.com
+  content:
+    subject: "Confirmación de Reserva" #subject-email
+    description:  "Hola [USERNAME], \n\n Gracias por formar parte de Art Experience :rocket: \n Su reserva ah sido agendada correctamente!! \n\nDetalle de la Reserva: \n "#content-text of email
