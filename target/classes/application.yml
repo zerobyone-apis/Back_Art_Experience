@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: ${PORT}
   tomcat:
     max-threads: 300
 
@@ -36,7 +36,7 @@ reports-reserves:
 mail:
   username: art.experience.uy.2020@gmail.com
   password: art_experience_2020
-  to: damianezetiel1@gmail.com, mitsuki-kun@hotmail.com,art.experience.uy.2020@gmail.com #peraltana.21@gmail.com,max3.1994@gmail.com,smtp.test.zero@gmail.com,
+  to:  mitsuki-kun@hotmail.com,art.experience.uy.2020@gmail.com #peraltana.21@gmail.com,max3.1994@gmail.com,smtp.test.zero@gmail.com,
   host: smtp.gmail.com #host
   port: 587
   auth: true
