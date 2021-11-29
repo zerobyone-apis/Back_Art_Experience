@@ -4,8 +4,8 @@ server:
     max-threads: 300
 
 spring:
-  profiles:
-    active: @spring.profiles.active@
+  #profiles:
+  #  active: @spring.profiles.active@
   application:
     name: artexperience-api
   data:
@@ -15,6 +15,9 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
+    #url:
+    #username:
+    #password:
     url: ${DATABASE_URL}
     username: ${USERNAME}
     password: ${PASSWORD}

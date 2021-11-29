@@ -5,7 +5,6 @@ ENV SLEEP 1
 ADD *.jar /Art_Experience-V.1.jar
 
 EXPOSE 8083
-#RUN sh -c 'touch /Art_Experience-V.1.jar'
 
 CMD sleep ${SLEEP} && \
     java -Xmx2048m -Djava.security.egd=file:/dev/./urandom -jar /Art_Experience-0.1.jar

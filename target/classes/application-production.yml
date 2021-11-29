@@ -4,8 +4,8 @@ server:
     max-threads: 300
 
 spring:
-  profiles:
-    active: local
+  #profiles:
+  #  active: @spring.profiles.active@
 
   application:
     name: artexperience-api
@@ -16,9 +16,9 @@ spring:
       default-media-type: application/json
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://art-experience-db.cd08baixsvhx.us-east-2.rds.amazonaws.com/artexperiencedb
-    username: zerobyone
-    password: aws..zero..dev
+    url: ###################
+    username: ##################
+    password: ####################
     pool-size: 30
   jpa:
     properties:
@@ -38,7 +38,7 @@ reports-reserves:
 mail:
   username: art.experience.uy.2020@gmail.com
   password: art_experience_2020
-  to: damianezetiel1@gmail.com, mitsuki-kun@hotmail.com,art.experience.uy.2020@gmail.com #peraltana.21@gmail.com,max3.1994@gmail.com,smtp.test.zero@gmail.com,
+  to: mitsuki-kun@hotmail.com,art.experience.uy.2020@gmail.com
   host: smtp.gmail.com #host
   port: 587
   auth: true
